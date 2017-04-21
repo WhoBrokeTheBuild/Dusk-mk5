@@ -1,9 +1,16 @@
 #ifndef DUSK_CONFIG_H
 #define DUSK_CONFIG_H
 
+// clang-format off
+
 #define DUSK_VERSION_STRING "@PROJECT_VERSION@"
 #define DUSK_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
 #define DUSK_VERSION_MINOR @PROJECT_VERSION_MINOR@
 #define DUSK_VERSION_PATCH @PROJECT_VERSION_PATCH@
+
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
+// clang-format on
 
 #endif // DUSK_CONFIG_H

@@ -1,34 +1,5 @@
-PROJECT(hello)
 
-SET(hello_OUT hello.bin)
-
-SET(
-  hello_SRCS
+DUSK_EXAMPLE(
+  hello
   src/main.c
 )
-
-FIND_PACKAGE(Dusk REQUIRED)
-
-ADD_EXECUTABLE(
-  ${hello_OUT}
-  ${hello_SRCS}
-)
-
-IF(DUSK_FOUND)
-  INCLUDE_DIRECTORIES(${DUSK_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(${hello_OUT} ${DUSK_LIBRARY})
-ENDIF()
-
-IF(UNIX)
-  ADD_CUSTOM_TARGET(
-    run-hello
-    COMMAND ${PROJECT_BINARY_DIR}/${hello_OUT}
-    DEPENDS ${hello_OUT}
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  )
-ENDIF()
-
-SOURCE_GROUP("Sources" FILES ${hello_SRCS})
-
-LIST(APPEND ALL_SRC ${hello_SRCS})
-SET(ALL_SRC ${ALL_SRC} PARENT_SCOPE)

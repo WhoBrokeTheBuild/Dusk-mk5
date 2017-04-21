@@ -369,3 +369,4 @@ __pycache__/
 ### Custom ###
 config.h
 *.bin
+vgcore.*

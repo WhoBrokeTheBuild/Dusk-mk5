@@ -1,17 +1,16 @@
 # Copyright 2017 Stephen Lane-Walsh
 # Licensed under the MIT License
 
-# Find the Dusk Library
+# Find the GLMM Include Files
 #
 # Output Variables
-# - DUSK_FOUND
-# - DUSK_INCLUDE_DIR
-# - DUSK_LIBRARY
+# - GLMM_FOUND
+# - GLMM_INCLUDE_DIR
 #
 
 SET(
-  DUSK_SEARCH_PATHS
-  ${DUSK_PATH}
+  GLMM_SEARCH_PATHS
+  ${GLMM_PATH}
   # Unix
   /usr/local
   /usr
@@ -27,31 +26,16 @@ SET(
 )
 
 FIND_PATH(
-  DUSK_INCLUDE_DIR
-  NAMES dusk/dusk.h
+  GLMM_INCLUDE_DIR
+  NAMES glmm/glmm.h
   HINTS
   PATH_SUFFIXES include src
-  PATHS ${DUSK_SEARCH_PATHS}
-)
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(PATH_SUFFIXES lib64 lib/x64 lib/amd64 lib)
-else()
-	set(PATH_SUFFIXES lib/x86 lib)
-endif()
-
-FIND_LIBRARY(
-  DUSK_LIBRARY
-  NAMES dusk
-  HINTS
-  PATH_SUFFIXES ${PATH_SUFFIXES}
-  PATHS ${DUSK_SEARCH_PATHS}
+  PATHS ${GLMM_SEARCH_PATHS}
 )
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(
-  Dusk
+  glmm
   REQUIRED_VARS
-  DUSK_INCLUDE_DIR
-  DUSK_LIBRARY
+  GLMM_INCLUDE_DIR
 )
