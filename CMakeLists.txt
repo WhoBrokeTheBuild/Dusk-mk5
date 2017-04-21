@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.2 FATAL_ERROR)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+SET(ALL_SRC "")
+
 ### Set compiler-specific flags
 IF (CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS " -std=c11 -Wall -Wextra -pedantic -Werror -Wno-unused-parameter")
@@ -19,10 +21,12 @@ ADD_SUBDIRECTORY(examples)
 
 ### Special rule to allow for "make format" on linux
 IF(UNIX)
-  STRING(REPLACE ";" " " ALL_SRC "${ALL_SRC}")
+  MESSAGE(STATUS "${ALL_SRC}")
   ADD_CUSTOM_TARGET(
     format
-    COMMAND "clang-format -i ${ALL_SRC}"
+    COMMENT "Formatting Source Files"
+    COMMAND clang-format -i ${ALL_SRC}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    SOURCES .clang-format
   )
 ENDIF()
