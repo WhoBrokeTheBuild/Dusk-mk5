@@ -9,19 +9,19 @@
 // clang-format off
 
 #if defined(NDEBUG)
-#  define DEBUG_INFO(M, ...) do { } while(false)
-#  define DEBUG_WARN(M, ...) do { } while(false)
-#  define DEBUG_ERROR(M, ...) do { } while(false)
+#  define DEBUG_INFO(M, ...) do { } while(0)
+#  define DEBUG_WARN(M, ...) do { } while(0)
+#  define DEBUG_ERROR(M, ...) do { } while(0)
 #else
 
 #  define DEBUG_INFO(M, ...) \
-          do { fprintf(stdout, "[INFO](%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); } while (false)
+          do { fprintf(stdout, "[INFO](%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); } while (0)
 
 #  define DEBUG_WARN(M, ...) \
-          do { fprintf(stderr, "[WARN](%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); } while (false)
+          do { fprintf(stderr, "[WARN](%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); } while (0)
 
 #  define DEBUG_ERROR(M, ...) \
-          do { fprintf(stderr, "[ERROR](%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); } while (false)
+          do { fprintf(stderr, "[ERROR](%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); } while (0)
 
 #endif
 

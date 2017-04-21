@@ -25,14 +25,14 @@ int main(int argc, char **argv)
     .color = { 0.0f, 1.0f, 0.0f, 1.0f },
   };
 
-  dusk_shader_info_t triangle_files[] = {
+  dusk_shader_file_t triangle_files[] = {
     { GL_VERTEX_SHADER,   "assets/triangle.vs" },
     { GL_FRAGMENT_SHADER, "assets/triangle.fs" },
     { 0, NULL },
   };
 
-  dusk_shader_init(&triangle_shader, (void *)&data, sizeof(triangle_data_t), "triangle_data", triangle_files);
-  dusk_shader_set_data(&triangle_shader, (void *)&data);
+  dusk_shader_init(&triangle_shader, triangle_files);
+  dusk_shader_add_data(&triangle_shader, "TriangleData", (void *)&data, sizeof(triangle_data_t));
 
   static const GLfloat verts[] = {
 		-1.0f, -1.0f, 0.0f,

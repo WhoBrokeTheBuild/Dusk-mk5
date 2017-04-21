@@ -1,8 +1,8 @@
 PROJECT("Dusk Model Format Compiler" VERSION 0.0.1)
 
-FIND_PACKAGE(Dusk        REQUIRED)
 FIND_PACKAGE(FlatBuffers REQUIRED)
 FIND_PACKAGE(ZLIB        REQUIRED)
+FIND_PACKAGE(Dusk)
 
 SET(dmfc_OUT dmfc)
 

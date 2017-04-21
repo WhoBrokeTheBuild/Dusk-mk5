@@ -1,21 +1,21 @@
 #include "dusk/shader.h"
 
 #include "debug.h"
+#include <dusk/camera.h>
 
 #define _MAX_SHADER_COUNT 100
 #define _MAX_SHADER_SIZE 10000
 #define _MAX_SHADER_LOG_SIZE 10000
+
+dusk_shader_data_t * _data_root   = NULL;
+int                  _data_max_id = 0;
 
 GLuint _dusk_shader_load(const char * filename, GLenum shader_type);
 
 bool _dusk_shader_program_print_log(GLuint program);
 bool _dusk_shader_print_log(GLuint shader);
 
-bool dusk_shader_init(dusk_shader_t * this,
-                      void *                     data,
-                      size_t                     data_size,
-                      const char *               name,
-                      const dusk_shader_info_t * shaders)
+bool dusk_shader_init(dusk_shader_t * this, const dusk_shader_file_t * shaders)
 {
   assert(NULL != this);
 
@@ -24,8 +24,6 @@ bool dusk_shader_init(dusk_shader_t * this,
   unsigned int shader_count = 0;
 
   this->program = 0;
-  this->ubo     = 0;
-  this->size    = data_size;
 
   if (NULL == shaders)
     return false;
@@ -72,18 +70,6 @@ bool dusk_shader_init(dusk_shader_t * this,
     glDeleteShader(shader_ids[i]);
   }
 
-  if (NULL != data)
-  {
-    glGenBuffers(1, &this->ubo);
-    glBindBuffer(GL_UNIFORM_BUFFER, this->ubo);
-    glBufferData(GL_UNIFORM_BUFFER, this->size, data, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    GLuint data_index = glGetUniformBlockIndex(this->program, name);
-    glUniformBlockBinding(this->program, data_index, 2);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, this->ubo);
-  }
-
   return true;
 
 error:
@@ -105,14 +91,94 @@ error:
 
 void dusk_shader_term(dusk_shader_t * this)
 {
+  dusk_shader_data_t * ptr;
+  for (ptr = _data_root; NULL != ptr; ptr = ptr->_next)
+  {
+    dusk_shader_data_t * tmp = ptr->_next;
+    free(ptr->_name);
+    free(ptr);
+    ptr = tmp;
+  }
+
   glDeleteProgram(this->program);
 }
 
-void dusk_shader_set_data(dusk_shader_t * this, void * data)
+int dusk_shader_add_data(dusk_shader_t * this,
+                         const char * name,
+                         void *       data,
+                         size_t       size)
 {
-  glBindBuffer(GL_UNIFORM_BUFFER, this->ubo);
-  GLvoid * ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
-  memcpy(ptr, data, this->size);
+  assert(NULL != this);
+
+  int                   index = 0;
+  dusk_shader_data_t *  ptr   = NULL;
+  dusk_shader_data_t ** next  = &_data_root;
+  for (ptr = _data_root; NULL != ptr; ptr = ptr->_next)
+  {
+    if (0 == strcmp(ptr->_name, name))
+      break;
+
+    next = &ptr->_next;
+    ++index;
+  }
+
+  if (NULL == ptr)
+  {
+    ptr = malloc(sizeof(dusk_shader_data_t));
+    memset(ptr, 0, sizeof(dusk_shader_data_t));
+
+    if (*next == NULL)
+    {
+      *next = ptr;
+    }
+    else
+    {
+      (*next)->_next = ptr;
+    }
+
+    ptr->_name = strdup(name);
+    ptr->_ubo  = 0;
+    ptr->_size = size;
+
+    glGenBuffers(1, &ptr->_ubo);
+    glBindBuffer(GL_UNIFORM_BUFFER, ptr->_ubo);
+    glBufferData(GL_UNIFORM_BUFFER, ptr->_size, data, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    GLuint data_index = glGetUniformBlockIndex(this->program, name);
+    glUniformBlockBinding(this->program, data_index, _data_max_id);
+    glBindBufferBase(GL_UNIFORM_BUFFER, _data_max_id, ptr->_ubo);
+
+    printf("Added Shader Data %s at index %d\n", name, _data_max_id);
+
+    ++_data_max_id;
+  }
+  else
+  {
+    dusk_shader_set_data(this, index, data);
+  }
+
+  return index;
+}
+
+void dusk_shader_set_data(dusk_shader_t * this, int index, void * data)
+{
+  assert(NULL != this);
+
+  dusk_shader_data_t * ptr = _data_root;
+  for (int i = 0; i < index; ++i)
+  {
+    if (NULL == ptr)
+      break;
+    ptr = ptr->_next;
+  }
+
+  if (NULL == ptr)
+    return;
+
+  glBindBuffer(GL_UNIFORM_BUFFER, ptr->_ubo);
+  GLvoid * data_ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+  memcpy(data_ptr, data, ptr->_size);
   glUnmapBuffer(GL_UNIFORM_BUFFER);
 }
 

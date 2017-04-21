@@ -23,23 +23,23 @@ int main(int argc, char **argv)
 
   dusk_shader_t flat_shader;
   flat_data_t data = {
-    .color = { 0.0f, 0.0f, 1.0f, 1.0f },
+    .color    = { 0.0f, 0.0f, 1.0f, 1.0f },
     .rotation = 0.0f,
   };
 
-  dusk_shader_info_t flat_files[] = {
+  dusk_shader_file_t flat_files[] = {
     { GL_VERTEX_SHADER,   "assets/flat.vs" },
     { GL_FRAGMENT_SHADER, "assets/flat.fs" },
     { 0, NULL },
   };
 
-  dusk_shader_init(&flat_shader, (void *)&data, sizeof(flat_data_t), "flat_data", flat_files);
-  dusk_shader_set_data(&flat_shader, (void *)&data);
+  dusk_shader_init(&flat_shader, flat_files);
+  dusk_shader_add_data(&flat_shader, "FlatData", (void *)&data, sizeof(flat_data_t));
 
   dmf_Model_table_t dmf;
   unsigned char * buffer = NULL;
 
-  dmf = dusk_load_dmf("assets/cube.dmfz", &buffer);
+  dmf = dusk_load_dmf("assets/cube.dmf", &buffer);
 
   unsigned int count = 0;
   float * verts = NULL;

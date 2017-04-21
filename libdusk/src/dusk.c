@@ -6,7 +6,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-dusk_model_t * dusk_models[DUSK_MAX_MODELS] = {NULL};
+dusk_model_t *  dusk_models[DUSK_MAX_MODELS] = {NULL};
+dusk_camera_t * dusk_camera                  = NULL;
 
 const char * dusk_version()
 {
@@ -16,6 +17,8 @@ const char * dusk_version()
 void _dusk_render_cb()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  dusk_camera_update(dusk_camera);
 
   for (int i = 0; i < DUSK_MAX_MODELS; ++i)
   {
@@ -30,6 +33,7 @@ void _dusk_render_cb()
 
 void _dusk_resize_cb(GLint width, GLint height)
 {
+  dusk_camera_set_aspect(dusk_camera, width, height);
 }
 
 void _dusk_special_key_cb(int key, int x, int y)
@@ -60,6 +64,19 @@ bool dusk_init(
     return false;
   }
 
+  dusk_camera = malloc(sizeof(dusk_camera_t));
+  dusk_camera_init(dusk_camera);
+  dusk_camera_set_aspect(dusk_camera, width, height);
+  dusk_camera_set_clip(dusk_camera, 0.001f, 10000.0f);
+  dusk_camera_set_fov(dusk_camera, GLMM_RAD(45.0f));
+
+  dusk_camera_set_pos(dusk_camera,     (vec3f_t) {5.0f, 5.0f, 5.0f});
+  dusk_camera_set_look_at(dusk_camera, (vec3f_t) {0.0f, 0.0f, 0.0f});
+  dusk_camera_set_up(dusk_camera,      (vec3f_t) {0.0f, 1.0f, 0.0f});
+
+  dusk_camera_update(dusk_camera);
+  dusk_camera_print(dusk_camera);
+
   // glEnable(GL_DEPTH_TEST);
   // glDepthFunc(GL_LESS);
   // glEnable(GL_BLEND);
@@ -83,4 +100,5 @@ void dusk_run()
 
 void dusk_term()
 {
+  free(dusk_camera);
 }

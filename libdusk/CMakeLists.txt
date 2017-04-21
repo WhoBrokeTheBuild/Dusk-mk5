@@ -44,7 +44,6 @@ CONFIGURE_FILE(
 )
 
 if(FLATCC_FOUND)
-  MESSAGE(STATUS "${FLATCC_EXECUTABLE}")
   ADD_CUSTOM_COMMAND(
     OUTPUT ${PROJECT_BINARY_DIR}/include/dusk/flatbuffers_common_reader.h
            ${PROJECT_BINARY_DIR}/include/dusk/dmf_reader.h

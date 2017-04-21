@@ -4,28 +4,39 @@
 #include <dusk/config.h>
 #include <stdbool.h>
 
-typedef struct dusk_shader
-{
-  GLuint program;
-  GLuint ubo;
-  size_t size;
-} dusk_shader_t;
-
-typedef struct dusk_shader_info
+typedef struct dusk_shader_file
 {
   GLenum       type;
   const char * filename;
-} dusk_shader_info_t;
 
-bool dusk_shader_init(dusk_shader_t * this,
-                      void *                     data,
-                      size_t                     data_size,
-                      const char *               name,
-                      const dusk_shader_info_t * shaders);
+} dusk_shader_file_t;
+
+typedef struct dusk_shader_data
+{
+  char * _name;
+  GLuint _ubo;
+  size_t _size;
+
+  struct dusk_shader_data * _next;
+
+} dusk_shader_data_t;
+
+typedef struct dusk_shader
+{
+  GLuint program;
+
+} dusk_shader_t;
+
+bool dusk_shader_init(dusk_shader_t * this, const dusk_shader_file_t * shaders);
 
 void dusk_shader_term(dusk_shader_t * this);
 
-void dusk_shader_set_data(dusk_shader_t * this, void * data);
+int dusk_shader_add_data(dusk_shader_t * this,
+                         const char * name,
+                         void *       data,
+                         size_t       size);
+
+void dusk_shader_set_data(dusk_shader_t * this, int index, void * data);
 
 void dusk_shader_bind(dusk_shader_t * this);
 

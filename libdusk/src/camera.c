@@ -1,7 +1,7 @@
 #include "dusk/camera.h"
 #include <math.h>
 
-void camera_init(camera_t * this)
+void dusk_camera_init(dusk_camera_t * this)
 {
   mat4x4_init(this->proj, 1.0f);
   mat4x4_init(this->view, 1.0f);
@@ -10,6 +10,8 @@ void camera_init(camera_t * this)
   vec3f_init(this->_dir, 0.0f);
   vec3f_init(this->_up, 0.0f);
   this->_up[1] = 1.0f;
+
+  vec3f_init(this->_pos_delta, 0.0f);
 
   this->_pitch = 0.0f;
   this->_yaw   = 0.0f;
@@ -23,7 +25,7 @@ void camera_init(camera_t * this)
   this->_invalid_view = true;
 }
 
-void camera_print(camera_t * this)
+void dusk_camera_print(dusk_camera_t * this)
 {
   printf("Proj:\n");
   mat4x4_print(this->proj);
@@ -50,50 +52,50 @@ void camera_print(camera_t * this)
   printf("\n");
 }
 
-void camera_set_aspect(camera_t * this, float width, float height)
+void dusk_camera_set_aspect(dusk_camera_t * this, float width, float height)
 {
   this->_aspect       = width / height;
   this->_invalid_proj = true;
 }
 
-void camera_set_clip(camera_t * this, float vnear, float vfar)
+void dusk_camera_set_clip(dusk_camera_t * this, float vnear, float vfar)
 {
   this->_vnear        = vnear;
   this->_vfar         = vfar;
   this->_invalid_proj = true;
 }
 
-void camera_set_fov(camera_t * this, float fov)
+void dusk_camera_set_fov(dusk_camera_t * this, float fov)
 {
   this->_fov          = fov;
   this->_invalid_proj = true;
 }
 
-void camera_set_pos(camera_t * this, vec3f_t pos)
+void dusk_camera_set_pos(dusk_camera_t * this, vec3f_t pos)
 {
   vec3f_copy(this->_pos, pos);
   this->_invalid_view = true;
 }
 
-void camera_set_dir(camera_t * this, vec3f_t dir)
+void dusk_camera_set_dir(dusk_camera_t * this, vec3f_t dir)
 {
   vec3f_copy(this->_dir, dir);
   this->_invalid_view = true;
 }
 
-void camera_set_look_at(camera_t * this, vec3f_t look_at)
+void dusk_camera_set_look_at(dusk_camera_t * this, vec3f_t look_at)
 {
   vec3f_copy(this->_look_at, look_at);
   this->_invalid_view = true;
 }
 
-void camera_set_up(camera_t * this, vec3f_t up)
+void dusk_camera_set_up(dusk_camera_t * this, vec3f_t up)
 {
   vec3f_copy(this->_up, up);
   this->_invalid_view = true;
 }
 
-void camera_move(camera_t * this, camera_dir_t dir, float amount)
+void dusk_camera_move(dusk_camera_t * this, dusk_camera_dir_t dir, float amount)
 {
   vec3f_t tmp, left;
 
@@ -142,7 +144,7 @@ void camera_move(camera_t * this, camera_dir_t dir, float amount)
   this->_invalid_view = true;
 }
 
-void camera_change_pitch(camera_t * this, float angle)
+void dusk_camera_change_pitch(dusk_camera_t * this, float angle)
 {
   this->_pitch += angle;
 
@@ -154,7 +156,7 @@ void camera_change_pitch(camera_t * this, float angle)
   this->_invalid_view = true;
 }
 
-void camera_change_yaw(camera_t * this, float angle)
+void dusk_camera_change_yaw(dusk_camera_t * this, float angle)
 {
   this->_yaw += angle;
 
@@ -176,7 +178,7 @@ void camera_change_yaw(camera_t * this, float angle)
   this->_invalid_view = true;
 }
 
-void camera_update(camera_t * this)
+void dusk_camera_update(dusk_camera_t * this)
 {
   if (this->_invalid_view)
   {

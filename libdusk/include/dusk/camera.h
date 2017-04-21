@@ -4,7 +4,7 @@
 #include <dusk/config.h>
 #include <glmm/glmm.h>
 
-typedef enum camera_dir {
+typedef enum dusk_camera_dir {
   CAM_DIR_UP,
   CAM_DIR_DOWN,
   CAM_DIR_LEFT,
@@ -12,12 +12,12 @@ typedef enum camera_dir {
   CAM_DIR_FORWARD,
   CAM_DIR_BACK
 
-} camera_dir_t;
+} dusk_camera_dir_t;
 
-struct camera
+typedef struct dusk_camera
 {
-  mat4x4_t proj;
   mat4x4_t view;
+  mat4x4_t proj;
 
   vec3f_t _pos;
   vec3f_t _dir;
@@ -35,27 +35,28 @@ struct camera
 
   bool _invalid_proj;
   bool _invalid_view;
-};
 
-typedef struct camera camera_t;
+} dusk_camera_t;
 
-void camera_init(camera_t * this);
-void camera_print(camera_t * this);
+void dusk_camera_init(dusk_camera_t * this);
+void dusk_camera_print(dusk_camera_t * this);
 
-void camera_set_aspect(camera_t * this, float width, float height);
-void camera_set_clip(camera_t * this, float vnear, float vfar);
-void camera_set_fov(camera_t * this, float fov);
+void dusk_camera_set_aspect(dusk_camera_t * this, float width, float height);
+void dusk_camera_set_clip(dusk_camera_t * this, float vnear, float vfar);
+void dusk_camera_set_fov(dusk_camera_t * this, float fov);
 
-void camera_set_pos(camera_t * this, vec3f_t pos);
-void camera_set_dir(camera_t * this, vec3f_t dir);
-void camera_set_up(camera_t * this, vec3f_t up);
-void camera_set_look_at(camera_t * this, vec3f_t look_at);
+void dusk_camera_set_pos(dusk_camera_t * this, vec3f_t pos);
+void dusk_camera_set_dir(dusk_camera_t * this, vec3f_t dir);
+void dusk_camera_set_up(dusk_camera_t * this, vec3f_t up);
+void dusk_camera_set_look_at(dusk_camera_t * this, vec3f_t look_at);
 
-void camera_move(camera_t * this, camera_dir_t dir, float amount);
+void dusk_camera_move(dusk_camera_t * this,
+                      dusk_camera_dir_t dir,
+                      float             amount);
 
-void camera_change_pitch(camera_t * this, float angle);
-void camera_change_yaw(camera_t * this, float angle);
+void dusk_camera_change_pitch(dusk_camera_t * this, float angle);
+void dusk_camera_change_yaw(dusk_camera_t * this, float angle);
 
-void camera_update(camera_t * this);
+void dusk_camera_update(dusk_camera_t * this);
 
 #endif // DUSK_CAMERA_H

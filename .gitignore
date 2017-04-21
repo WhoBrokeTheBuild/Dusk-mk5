@@ -366,6 +366,12 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
+### FLatBuffers ###
+*_generated.h
+*_reader.h
+*_verifier.h
+flatbuffers_common_*.h
+
 ### Custom ###
 config.h
 *.bin
