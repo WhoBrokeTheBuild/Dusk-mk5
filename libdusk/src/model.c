@@ -47,11 +47,8 @@ void _dusk_model_update_shader_data(dusk_model_t * this)
   mat4x4_copy(this->_shader_data.model, this->_mat);
   mat4x4_copy(this->_shader_data.view, dusk_camera->view);
   mat4x4_copy(this->_shader_data.proj, dusk_camera->proj);
-  mat4x4_xmul(
-      this->_shader_data.mvp, this->_shader_data.view, this->_shader_data.proj);
-  mat4x4_mul(this->_shader_data.mvp, this->_shader_data.model);
 
-  printf("MVP:\n");
-  mat4x4_print(this->_shader_data.mvp);
-  printf("\n");
+  mat4x4_xmul(
+      this->_shader_data.mvp, this->_shader_data.proj, this->_shader_data.view);
+  mat4x4_mul(this->_shader_data.mvp, this->_shader_data.model);
 }
