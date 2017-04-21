@@ -5,7 +5,7 @@
 # Object files
 *.o
 *.ko
-*.obj
+#*.obj
 *.elf
 
 # Linker output
@@ -370,3 +370,4 @@ __pycache__/
 config.h
 *.bin
 vgcore.*
+dmfc/dmfc

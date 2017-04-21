@@ -6,6 +6,7 @@
 #include <dusk/mesh.h>
 #include <dusk/model.h>
 #include <dusk/shader.h>
+#include <dusk/dmf.h>
 
 const char * dusk_version();
 

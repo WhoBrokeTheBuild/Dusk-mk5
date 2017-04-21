@@ -1,0 +1,45 @@
+namespace dmf;
+
+struct Vec2 {
+    x:float;
+    y:float;
+}
+
+struct Vec3 {
+    x:float;
+    y:float;
+    z:float;
+}
+
+struct Color {
+    r:float;
+    g:float;
+    b:float;
+}
+
+table Material {
+    name:string;
+    ambient:Color;
+    diffuse:Color;
+    specular:Color;
+    shininess:float;
+    dissolve:float;
+    ambient_map:string;
+    diffuse_map:string;
+    specular_map:string;
+    bump_map:string;
+}
+
+table Shape {
+    name:string;
+    material:Material;
+    vertices:[Vec3];
+    normals:[Vec3];
+    texcoords:[Vec2];
+}
+
+table Model {
+    shapes:[Shape];
+}
+
+root_type Model;

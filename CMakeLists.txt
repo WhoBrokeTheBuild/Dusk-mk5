@@ -5,10 +5,16 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 SET(ALL_SRC "")
 
 ### Set compiler-specific flags
-IF (CMAKE_COMPILER_IS_GNUCC OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
+IF(CMAKE_COMPILER_IS_GNUCC OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
   SET(
     CMAKE_C_FLAGS
     " -std=c11 -D_XOPEN_SOURCE=700 \
+      -Wall -Wextra -pedantic -Werror \
+      -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments"
+  )
+  SET(
+    CMAKE_CXX_FLAGS
+    " -std=c++11 -D_XOPEN_SOURCE=700 \
       -Wall -Wextra -pedantic -Werror \
       -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments"
   )
@@ -18,6 +24,9 @@ ENDIF()
 
 ### Main Library
 ADD_SUBDIRECTORY(libdusk)
+
+### Dusk Model Format Compiler
+ADD_SUBDIRECTORY(dmfc)
 
 ### Example Projects
 ADD_SUBDIRECTORY(examples)
