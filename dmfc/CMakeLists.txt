@@ -2,7 +2,6 @@ PROJECT("Dusk Model Format Compiler" VERSION 0.0.1)
 
 FIND_PACKAGE(FlatBuffers REQUIRED)
 FIND_PACKAGE(ZLIB        REQUIRED)
-FIND_PACKAGE(Dusk)
 
 SET(dmfc_OUT dmfc)
 
@@ -14,7 +13,7 @@ SET(
 
 SET(
   dmfc_FBS
-  ${CMAKE_SOURCE_DIR}/libdusk/src/dmf.fbs
+  ${CMAKE_SOURCE_DIR}/flatbuffers/dmf.fbs
 )
 
 INCLUDE_DIRECTORIES(

@@ -1,25 +1,28 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.2 FATAL_ERROR)
 
+SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+SET(CMAKE_COLOR_MAKEFILE          ON)
+
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+IF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+  MESSAGE(SEND_ERROR "In-source builds are not allowed.")
+ENDIF()
 
 SET(ALL_SRC "")
 
 ### Set compiler-specific flags
 IF(CMAKE_COMPILER_IS_GNUCC OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
-  SET(
-    CMAKE_C_FLAGS
-    " -std=c11 -D_XOPEN_SOURCE=700 \
-      -Wall -Wextra -pedantic -Werror \
-      -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments"
+  SET(COMMON_FLAGS
+    "-D_XOPEN_SOURCE=700 \
+     -Wall -Wextra -pedantic -Werror \
+     -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments"
   )
-  SET(
-    CMAKE_CXX_FLAGS
-    " -std=c++11 -D_XOPEN_SOURCE=700 \
-      -Wall -Wextra -pedantic -Werror \
-      -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments"
-  )
+  SET(CMAKE_C_FLAGS   " -std=c11 ${COMMON_FLAGS}")
+  SET(CMAKE_CXX_FLAGS " -std=c++11 ${COMMON_FLAGS}")
 ELSEIF(MSVC)
   SET(CMAKE_C_FLAGS "/NODEFAULTLIB:MSVCRT")
+  SET(CMAKE_SHARED_LIBRARY_PREFIX "")
 ENDIF()
 
 ### Main Library

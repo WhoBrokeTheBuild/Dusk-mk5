@@ -373,6 +373,7 @@ __pycache__/
 flatbuffers_common_*.h
 
 ### Custom ###
+build
 config.h
 *.bin
 vgcore.*
