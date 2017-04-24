@@ -39,8 +39,7 @@ IF(UNIX)
   ADD_CUSTOM_TARGET(
     format
     COMMENT "Formatting Source Files"
-    COMMAND clang-format -i ${ALL_SRC}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS format-dusk format-dmfc format-examples
     SOURCES .clang-format
   )
 ENDIF()

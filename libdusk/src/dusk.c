@@ -13,7 +13,7 @@ dusk_settings_t DUSK_DEFAULT_SETTINGS = {
 
     .max_fps = 60,
 
-    .limit_fps = true,
+    .limit_fps   = true,
     .display_fps = true,
 
     .update_func = NULL,
@@ -32,8 +32,6 @@ const char * dusk_version()
 
 void _dusk_display_cb()
 {
-  printf("Display\n");
-
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (NULL != g_settings.render_func)
@@ -54,18 +52,15 @@ void _dusk_display_cb()
 
 void _dusk_idle_cb()
 {
-  printf("Idle\n");
+  static double  frame_delay = 1.0;
+  static double  fps_delay   = 250.0;
+  static double  frame_elap  = 0.0;
+  static double  fps_elap    = 0.0;
+  static long    frames      = 0;
+  static char    title_buffer[300];
+  static clock_t start = 0, diff = 0;
 
-  static double frame_delay = 1.0;
-  static double fps_delay   = 250.0;
-  static double frame_elap  = 0.0;
-  static double fps_elap    = 0.0;
-  static long   frames      = 0;
-  static char   title_buffer[300];
-  static clock_t       start = 0,
-                diff = 0;
-
-  diff = clock() - start;
+  diff  = clock() - start;
   start = clock();
 
   dusk_camera_update(dusk_camera);
@@ -93,8 +88,8 @@ void _dusk_idle_cb()
 
     if (g_settings.display_fps)
     {
-      snprintf(title_buffer, sizeof(title_buffer),
-        "%s - %.2f", g_settings.window_title, g_frame_info.fps);
+      snprintf(title_buffer, sizeof(title_buffer), "%s - %.2f",
+               g_settings.window_title, g_frame_info.fps);
       glutSetWindowTitle(title_buffer);
     }
   }

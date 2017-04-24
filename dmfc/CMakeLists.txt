@@ -40,3 +40,11 @@ IF(ZLIB_FOUND)
 ENDIF()
 
 SOURCE_GROUP("Sources" FILES ${dmfc_SRCS})
+
+IF(UNIX)
+  ADD_CUSTOM_TARGET(
+    format-dmfc
+    COMMAND clang-format -i ${dmfc_SRCS}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  )
+ENDIF()
