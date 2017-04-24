@@ -8,6 +8,7 @@ SET(Dusk_OUT dusk)
 SET(
   Dusk_SRCS
   ${PROJECT_SOURCE_DIR}/include/dusk/dusk.h
+  ${PROJECT_SOURCE_DIR}/include/dusk/timer.h
   ${PROJECT_SOURCE_DIR}/include/dusk/camera.h
   ${PROJECT_SOURCE_DIR}/include/dusk/shader.h
   ${PROJECT_SOURCE_DIR}/include/dusk/mesh.h
@@ -20,6 +21,7 @@ SET(
   ${PROJECT_BINARY_DIR}/include/dusk/dmf_verifier.h
 
   ${PROJECT_SOURCE_DIR}/src/dusk.c
+  ${PROJECT_SOURCE_DIR}/src/timer.c
   ${PROJECT_SOURCE_DIR}/src/debug.h
   ${PROJECT_SOURCE_DIR}/src/camera.c
   ${PROJECT_SOURCE_DIR}/src/shader.c

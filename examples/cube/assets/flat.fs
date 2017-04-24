@@ -10,6 +10,5 @@ out vec4 o_color;
 
 void main()
 {
-  // o_color = flat_data.color;
   o_color = flat_data.color;
 }

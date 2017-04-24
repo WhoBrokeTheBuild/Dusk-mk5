@@ -29,24 +29,25 @@ void update(dusk_frame_info_t * finfo)
 {
   vec3f_t rot;
 
-  // dusk_model_get_rot(&cube, rot);
-  // rot[1] += GLMM_RAD(5.0f * finfo->delta);
-  // if (rot[1] > GLMM_PI) rot[1] = 0.0f;
-  // dusk_model_set_rot(&cube, rot);
+  dusk_model_get_rot(&cube, rot);
+  rot[1] += GLMM_RAD(5.0f * finfo->delta);
+  if (rot[1] > GLMM_PI)
+    rot[1] = 0.0f;
+  dusk_model_set_rot(&cube, rot);
 
-  // color_change_delay -= finfo->elapsed_time;
-  // if (color_change_delay <= 0)
-  //{
-  //  color_change_delay = MAX_COLOR_CHANGE_DELAY;
-  //  ++color_index;
-  //  if (color_index >= NUM_COLORS)
-  //  {
-  //    color_index = 0;
-  //  }
+  color_change_delay -= finfo->elapsed_time;
+  if (color_change_delay <= 0)
+  {
+    color_change_delay = MAX_COLOR_CHANGE_DELAY;
+    ++color_index;
+    if (color_index >= NUM_COLORS)
+    {
+      color_index = 0;
+    }
 
-  //  vec4f_copy(flat_data.color, COLORS[color_index]);
-  //  dusk_shader_set_data(&flat_shader, flat_data_index, (void *)&flat_data);
-  //}
+    vec4f_copy(flat_data.color, COLORS[color_index]);
+    dusk_shader_set_data(&flat_shader, flat_data_index, (void *)&flat_data);
+  }
 }
 
 int main(int argc, char ** argv)
@@ -56,7 +57,6 @@ int main(int argc, char ** argv)
   settings.window_height   = 480;
   settings.window_title    = "Cube";
   settings.update_func     = &update;
-  settings.max_fps         = 60;
 
   dusk_init(argc, argv, &settings);
 
@@ -92,9 +92,10 @@ int main(int argc, char ** argv)
   dmf = dusk_load_dmf("assets/cube.dmfz", &buffer);
 
   unsigned int count = 0;
-  float *      verts = NULL;
-  float *      norms = NULL;
-  float *      txcds = NULL;
+
+  float * verts = NULL;
+  float * norms = NULL;
+  float * txcds = NULL;
 
   dmf_Shape_vec_t shapes = dmf_Model_shapes(dmf);
 

@@ -1,10 +1,10 @@
 #include "dusk/dusk.h"
 
 #include "debug.h"
+#include <dusk/timer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 dusk_settings_t DUSK_DEFAULT_SETTINGS = {
     .window_width  = 1024,
@@ -25,6 +25,8 @@ dusk_camera_t * dusk_camera                  = NULL;
 dusk_frame_info_t g_frame_info;
 dusk_settings_t   g_settings;
 
+static long g_frames = 0;
+
 const char * dusk_version()
 {
   return DUSK_VERSION_STRING;
@@ -32,6 +34,8 @@ const char * dusk_version()
 
 void _dusk_display_cb()
 {
+  ++g_frames;
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (NULL != g_settings.render_func)
@@ -52,16 +56,16 @@ void _dusk_display_cb()
 
 void _dusk_idle_cb()
 {
-  static double  frame_delay = 1.0;
-  static double  fps_delay   = 250.0;
-  static double  frame_elap  = 0.0;
-  static double  fps_elap    = 0.0;
-  static long    frames      = 0;
-  static char    title_buffer[300];
-  static clock_t start = 0, diff = 0;
+  static double       frame_delay = 1.0;
+  static double       fps_delay   = 250.0;
+  static double       frame_elap  = 0.0;
+  static double       fps_elap    = 0.0;
+  static char         title_buffer[300];
+  static dusk_timer_t timer;
+  double              diff_ms;
 
-  diff  = clock() - start;
-  start = clock();
+  diff_ms = dusk_timer_get_ms(&timer);
+  dusk_timer_start(&timer);
 
   dusk_camera_update(dusk_camera);
 
@@ -72,18 +76,16 @@ void _dusk_idle_cb()
 
   if (!g_settings.limit_fps || frame_delay <= frame_elap)
   {
-    ++frames;
     frame_elap = 0.0;
-
     glutPostRedisplay();
   }
 
   fps_elap += g_frame_info.elapsed_time;
   if (fps_delay <= fps_elap)
   {
-    g_frame_info.fps = (float)((frames / fps_elap) * 1000.0f);
+    g_frame_info.fps = (float)((g_frames / fps_elap) * 1000.0f);
 
-    frames   = 0;
+    g_frames = 0;
     fps_elap = 0.0;
 
     if (g_settings.display_fps)
@@ -94,7 +96,7 @@ void _dusk_idle_cb()
     }
   }
 
-  g_frame_info.elapsed_time = (diff * 1000.0) / CLOCKS_PER_SEC;
+  g_frame_info.elapsed_time = diff_ms;
   g_frame_info.total_time += g_frame_info.elapsed_time;
   g_frame_info.delta = (float)(g_frame_info.elapsed_time / frame_delay);
 
