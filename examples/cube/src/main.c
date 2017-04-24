@@ -3,7 +3,12 @@
 
 int main(int argc, char **argv)
 {
-  dusk_init(argc, argv, "Cube", 640, 480);
+  dusk_settings_t settings = DUSK_DEFAULT_SETTINGS;
+  settings.window_width = 640;
+  settings.window_height = 480;
+  settings.window_title = "Cube";
+
+  dusk_init(argc, argv, &settings);
 
   int glut_ver = glutGet(GLUT_VERSION);
   int glut_pat = glut_ver % 100;

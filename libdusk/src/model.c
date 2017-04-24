@@ -34,7 +34,8 @@ void dusk_model_render(dusk_model_t * this)
   dusk_shader_bind(this->_shader);
 
   _dusk_model_update_shader_data(this);
-  dusk_shader_set_data(this->_shader, this->_shader_data_id, &this->_shader_data);
+  dusk_shader_set_data(
+      this->_shader, this->_shader_data_id, &this->_shader_data);
 
   for (unsigned int i = 0; i < this->_mesh_count; ++i)
   {
