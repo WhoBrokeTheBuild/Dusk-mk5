@@ -1,12 +1,30 @@
 #include <dusk/dusk.h>
 #include <stdio.h>
 
+typedef struct {
+  float color[4];
+
+} flat_data_t;
+
+dusk_model_t g_cube;
+dusk_shader_t g_flat_shader;
+
+void update(dusk_frame_info_t * finfo)
+{
+  vec3f_t rot;
+
+  dusk_model_get_rot(&g_cube, rot);
+  rot[1] += GLMM_RAD(5.0f * finfo->delta);
+  dusk_model_set_rot(&g_cube, rot);
+}
+
 int main(int argc, char **argv)
 {
   dusk_settings_t settings = DUSK_DEFAULT_SETTINGS;
   settings.window_width = 640;
   settings.window_height = 480;
   settings.window_title = "Cube";
+  settings.update_func = &update;
 
   dusk_init(argc, argv, &settings);
 
@@ -21,15 +39,8 @@ int main(int argc, char **argv)
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
   printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
-  typedef struct {
-    float color[4];
-    float rotation;
-  } flat_data_t;
-
-  dusk_shader_t flat_shader;
-  flat_data_t data = {
+  flat_data_t flat_data = {
     .color    = { 0.0f, 0.0f, 1.0f, 1.0f },
-    .rotation = 0.0f,
   };
 
   dusk_shader_file_t flat_files[] = {
@@ -38,8 +49,8 @@ int main(int argc, char **argv)
     { 0, NULL },
   };
 
-  dusk_shader_init(&flat_shader, flat_files);
-  dusk_shader_add_data(&flat_shader, "FlatData", (void *)&data, sizeof(flat_data_t));
+  dusk_shader_init(&g_flat_shader, flat_files);
+  (void)dusk_shader_add_data(&g_flat_shader, "FlatData", (void *)&flat_data, sizeof(flat_data_t));
 
   dmf_Model_table_t dmf;
   unsigned char * buffer = NULL;
@@ -78,16 +89,15 @@ int main(int argc, char **argv)
 
   free(buffer);
 
-  dusk_model_t cube;
-  dusk_model_init(&cube, 1, &cube_mesh, &flat_shader);
-  dusk_models[0] = &cube;
+  dusk_model_init(&g_cube, 1, &cube_mesh, &g_flat_shader);
+  dusk_models[0] = &g_cube;
 
   dusk_run();
   dusk_term();
 
-  dusk_model_term(&cube);
+  dusk_model_term(&g_cube);
   dusk_mesh_term(&cube_mesh);
-  dusk_shader_term(&flat_shader);
+  dusk_shader_term(&g_flat_shader);
 
   return 0;
 }

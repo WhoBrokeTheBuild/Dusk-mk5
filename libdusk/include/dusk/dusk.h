@@ -8,14 +8,14 @@
 #include <dusk/model.h>
 #include <dusk/shader.h>
 
-typedef struct dusk_time
+typedef struct dusk_frame_info
 {
   float  fps;
   float  delta;
-  double elapsed;
-  double total;
+  double elapsed_time;
+  double total_time;
 
-} dusk_time_t;
+} dusk_frame_info_t;
 
 typedef struct dusk_settings
 {
@@ -23,7 +23,7 @@ typedef struct dusk_settings
   unsigned int window_height;
   char *       window_title;
 
-  void (*update_func)(dusk_time_t *);
+  void (*update_func)(dusk_frame_info_t *);
   void (*render_func)();
 
 } dusk_settings_t;

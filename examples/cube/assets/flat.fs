@@ -1,7 +1,8 @@
 #version 330 core
 
-layout (std140) uniform FlatData {
-	vec4 color;
+layout (std140) uniform FlatData
+{
+	vec4  color;
 }
 flat_data;
 
