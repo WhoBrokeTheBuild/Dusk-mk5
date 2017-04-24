@@ -23,6 +23,11 @@ typedef struct dusk_settings
   unsigned int window_height;
   char *       window_title;
 
+  float max_fps;
+
+  bool limit_fps;
+  bool display_fps;
+
   void (*update_func)(dusk_frame_info_t *);
   void (*render_func)();
 

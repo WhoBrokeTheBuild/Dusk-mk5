@@ -6,12 +6,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define DUSK_MAX_FPS 60
-
 dusk_settings_t DUSK_DEFAULT_SETTINGS = {
     .window_width  = 1024,
     .window_height = 768,
     .window_title  = "Dusk",
+
+    .max_fps = 60,
+
+    .limit_fps = true,
+    .display_fps = true,
 
     .update_func = NULL,
     .render_func = NULL,
@@ -27,15 +30,42 @@ const char * dusk_version()
   return DUSK_VERSION_STRING;
 }
 
-void _dusk_render_cb()
+void _dusk_display_cb()
 {
+  printf("Display\n");
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (NULL != g_settings.render_func)
+  {
+    g_settings.render_func();
+  }
+
+  for (int i = 0; i < DUSK_MAX_MODELS; ++i)
+  {
+    if (dusk_models[i])
+    {
+      dusk_model_render(dusk_models[i]);
+    }
+  }
+
+  glutSwapBuffers();
+}
+
+void _dusk_idle_cb()
+{
+  printf("Idle\n");
+
   static double frame_delay = 1.0;
   static double fps_delay   = 250.0;
   static double frame_elap  = 0.0;
   static double fps_elap    = 0.0;
   static long   frames      = 0;
-  clock_t       start, diff;
+  static char   title_buffer[300];
+  static clock_t       start = 0,
+                diff = 0;
 
+  diff = clock() - start;
   start = clock();
 
   dusk_camera_update(dusk_camera);
@@ -45,27 +75,12 @@ void _dusk_render_cb()
     g_settings.update_func(&g_frame_info);
   }
 
-  if (frame_delay <= frame_elap)
+  if (!g_settings.limit_fps || frame_delay <= frame_elap)
   {
     ++frames;
     frame_elap = 0.0;
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    if (NULL != g_settings.render_func)
-    {
-      g_settings.render_func();
-    }
-
-    for (int i = 0; i < DUSK_MAX_MODELS; ++i)
-    {
-      if (dusk_models[i])
-      {
-        dusk_model_render(dusk_models[i]);
-      }
-    }
-
-    glutSwapBuffers();
+    glutPostRedisplay();
   }
 
   fps_elap += g_frame_info.elapsed_time;
@@ -75,16 +90,21 @@ void _dusk_render_cb()
 
     frames   = 0;
     fps_elap = 0.0;
-  }
 
-  diff = clock() - start;
+    if (g_settings.display_fps)
+    {
+      snprintf(title_buffer, sizeof(title_buffer),
+        "%s - %.2f", g_settings.window_title, g_frame_info.fps);
+      glutSetWindowTitle(title_buffer);
+    }
+  }
 
   g_frame_info.elapsed_time = (diff * 1000.0) / CLOCKS_PER_SEC;
   g_frame_info.total_time += g_frame_info.elapsed_time;
   g_frame_info.delta = (float)(g_frame_info.elapsed_time / frame_delay);
 
   frame_elap += g_frame_info.elapsed_time;
-  frame_delay = 1000.0 / DUSK_MAX_FPS;
+  frame_delay = 1000.0 / g_settings.max_fps;
 }
 
 void _dusk_resize_cb(GLint width, GLint height)
@@ -117,7 +137,7 @@ bool dusk_init(int argc, char ** argv, dusk_settings_t * settings)
   glutInit(&argc, argv);
   glutInitContextVersion(3, 3);
   glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
-  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
   glutInitWindowSize(g_settings.window_width, g_settings.window_height);
   glutCreateWindow(g_settings.window_title);
 
@@ -136,9 +156,9 @@ bool dusk_init(int argc, char ** argv, dusk_settings_t * settings)
   dusk_camera_set_clip(dusk_camera, 0.001f, 10000.0f);
   dusk_camera_set_fov(dusk_camera, GLMM_RAD(45.0f));
 
+  dusk_camera_set_up(dusk_camera, (vec3f_t){0.0f, 1.0f, 0.0f});
   dusk_camera_set_pos(dusk_camera, (vec3f_t){5.0f, 5.0f, 5.0f});
   dusk_camera_set_look_at(dusk_camera, (vec3f_t){0.0f, 0.0f, 0.0f});
-  dusk_camera_set_up(dusk_camera, (vec3f_t){0.0f, 1.0f, 0.0f});
 
   dusk_camera_update(dusk_camera);
 
@@ -149,8 +169,8 @@ bool dusk_init(int argc, char ** argv, dusk_settings_t * settings)
 
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-  glutDisplayFunc(&_dusk_render_cb);
-  glutIdleFunc(&_dusk_render_cb);
+  glutDisplayFunc(&_dusk_display_cb);
+  glutIdleFunc(&_dusk_idle_cb);
   glutReshapeFunc(&_dusk_resize_cb);
   glutSpecialFunc(&_dusk_special_key_cb);
   glutKeyboardFunc(&_dusk_key_cb);
@@ -169,5 +189,6 @@ void dusk_run()
 
 void dusk_term()
 {
+  free(g_settings.window_title);
   free(dusk_camera);
 }
