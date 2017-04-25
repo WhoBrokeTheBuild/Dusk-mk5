@@ -124,7 +124,7 @@ int main(int argc, char ** argv)
 
   free(buffer);
 
-  dusk_model_init(&cube, 1, &cube_mesh, &flat_shader);
+  dusk_model_init(&cube, NULL, 1, &cube_mesh, &flat_shader);
   dusk_models[0] = &cube;
 
   dusk_run();

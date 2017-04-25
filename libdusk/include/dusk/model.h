@@ -2,6 +2,7 @@
 #define DUSK_MODEL_H
 
 #include <dusk/config.h>
+#include <dusk/material.h>
 #include <dusk/mesh.h>
 #include <dusk/shader.h>
 #include <glmm/glmm.h>
@@ -13,13 +14,25 @@ typedef struct dusk_model_data
   mat4x4_t proj;
   mat4x4_t mvp;
 
+  vec4f_t ambient;
+  vec4f_t diffuse;
+  vec4f_t specular;
+
+  float shininess;
+
+  bool has_ambient_map;
+  bool has_diffuse_map;
+  bool has_specular_map;
+  bool has_bump_map;
+
 } dusk_model_data_t;
 
 typedef struct dusk_model
 {
-  dusk_shader_t * _shader;
-  unsigned int    _mesh_count;
-  dusk_mesh_t *   _meshes;
+  dusk_shader_t *   _shader;
+  unsigned int      _mesh_count;
+  dusk_mesh_t *     _meshes;
+  dusk_material_t * _material;
 
   mat4x4_t _mat;
   bool     _mat_invalid;
@@ -35,9 +48,10 @@ typedef struct dusk_model
 } dusk_model_t;
 
 void dusk_model_init(dusk_model_t * this,
-                     unsigned int    mesh_count,
-                     dusk_mesh_t *   meshes,
-                     dusk_shader_t * shader);
+                     dusk_material_t * material,
+                     unsigned int      mesh_count,
+                     dusk_mesh_t *     meshes,
+                     dusk_shader_t *   shader);
 
 void dusk_model_term(dusk_model_t * this);
 

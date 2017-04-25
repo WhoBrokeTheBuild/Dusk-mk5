@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
 
   free(buffer);
 
-  dusk_model_init(&monkey, 1, &monkey_mesh, &phong_shader);
+  dusk_model_init(&monkey, NULL, 1, &monkey_mesh, &phong_shader);
   dusk_models[0] = &monkey;
 
   dusk_run();

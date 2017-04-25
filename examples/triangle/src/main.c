@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   dusk_mesh_init(&triangle_mesh, 3, verts, NULL, NULL);
 
   dusk_model_t triangle;
-  dusk_model_init(&triangle, 1, &triangle_mesh, &triangle_shader);
+  dusk_model_init(&triangle, NULL, 1, &triangle_mesh, &triangle_shader);
   dusk_models[0] = &triangle;
 
   dusk_run();

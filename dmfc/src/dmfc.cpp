@@ -47,8 +47,10 @@ bool load_obj(const string & filename, FlatBufferBuilder & fbb)
   vector<tinyobj::shape_t>    shapes;
   vector<tinyobj::material_t> materials;
 
+  string dirname = GetDirname(filename) + "/";
+
   ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str(),
-                         GetDirname(filename).c_str());
+                         dirname.c_str());
 
   if (!ret)
   {

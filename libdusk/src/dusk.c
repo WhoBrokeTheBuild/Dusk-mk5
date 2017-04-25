@@ -1,6 +1,7 @@
 #include "dusk/dusk.h"
 
 #include "debug.h"
+#include <IL/il.h>
 #include <dusk/timer.h>
 #include <stdbool.h>
 #include <stdio.h>

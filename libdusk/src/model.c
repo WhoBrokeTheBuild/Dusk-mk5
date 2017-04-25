@@ -8,10 +8,12 @@ void _dusk_model_update_mat(dusk_model_t * this);
 void _dusk_model_update_shader_data(dusk_model_t * this);
 
 void dusk_model_init(dusk_model_t * this,
-                     unsigned int    mesh_count,
-                     dusk_mesh_t *   meshes,
-                     dusk_shader_t * shader)
+                     dusk_material_t * material,
+                     unsigned int      mesh_count,
+                     dusk_mesh_t *     meshes,
+                     dusk_shader_t *   shader)
 {
+  this->_material   = material;
   this->_mesh_count = mesh_count;
   this->_shader     = shader;
   this->_meshes =
@@ -109,13 +111,41 @@ void _dusk_model_update_mat(dusk_model_t * this)
 
 void _dusk_model_update_shader_data(dusk_model_t * this)
 {
-  mat4x4_copy(this->_shader_data.model, this->_mat);
-  mat4x4_copy(this->_shader_data.view, dusk_camera->view);
-  mat4x4_copy(this->_shader_data.proj, dusk_camera->proj);
+  dusk_model_data_t * data = &this->_shader_data;
 
-  mat4x4_xmul(
-      this->_shader_data.mvp, this->_shader_data.proj, this->_shader_data.view);
-  mat4x4_mul(this->_shader_data.mvp, this->_shader_data.model);
+  mat4x4_copy(data->model, this->_mat);
+  mat4x4_copy(data->view, dusk_camera->view);
+  mat4x4_copy(data->proj, dusk_camera->proj);
+
+  mat4x4_xmul(data->mvp, data->proj, data->view);
+  mat4x4_mul(data->mvp, data->model);
+
+  if (NULL == this->_material)
+  {
+    vec4f_copy(data->ambient, (vec4f_t){0.2, 0.2, 0.2, 1.0});
+    vec4f_copy(data->diffuse, (vec4f_t){0.0, 1.0, 0.0, 1.0});
+    vec4f_copy(data->specular, (vec4f_t){0.0, 0.0, 0.0, 1.0});
+
+    data->shininess = 32;
+
+    data->has_ambient_map  = false;
+    data->has_diffuse_map  = false;
+    data->has_specular_map = false;
+    data->has_bump_map     = false;
+  }
+  else
+  {
+    dusk_material_t * mat = this->_material;
+
+    vec4f_copy(data->ambient, mat->ambient);
+    vec4f_copy(data->diffuse, mat->diffuse);
+    vec4f_copy(data->specular, mat->specular);
+
+    if (mat->_diffuse_map != 0)
+    {
+      data->has_diffuse_map = true;
+    }
+  }
 
   this->_shader_data_invalid = false;
 }

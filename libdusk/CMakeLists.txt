@@ -13,6 +13,7 @@ SET(
   ${PROJECT_SOURCE_DIR}/include/dusk/shader.h
   ${PROJECT_SOURCE_DIR}/include/dusk/mesh.h
   ${PROJECT_SOURCE_DIR}/include/dusk/model.h
+  ${PROJECT_SOURCE_DIR}/include/dusk/material.h
   ${PROJECT_SOURCE_DIR}/include/dusk/dmf.h
 
   ${PROJECT_BINARY_DIR}/include/dusk/config.h
@@ -27,6 +28,7 @@ SET(
   ${PROJECT_SOURCE_DIR}/src/shader.c
   ${PROJECT_SOURCE_DIR}/src/mesh.c
   ${PROJECT_SOURCE_DIR}/src/model.c
+  ${PROJECT_SOURCE_DIR}/src/material.c
   ${PROJECT_SOURCE_DIR}/src/dmf.c
 )
 
