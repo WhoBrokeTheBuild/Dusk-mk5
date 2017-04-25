@@ -95,12 +95,13 @@ void _dusk_model_update_mat(dusk_model_t * this)
 {
   mat4x4_init(this->_mat, 1.0f);
 
+  mat4x4_scale(this->_mat, this->_scale);
+
   mat4x4_rotate(this->_mat, this->_rot[0], (vec3f_t){1.0f, 0.0f, 0.0f});
   mat4x4_rotate(this->_mat, this->_rot[1], (vec3f_t){0.0f, 1.0f, 0.0f});
   mat4x4_rotate(this->_mat, this->_rot[2], (vec3f_t){0.0f, 0.0f, 1.0f});
 
   mat4x4_translate(this->_mat, this->_pos);
-  mat4x4_scale(this->_mat, this->_scale);
 
   this->_mat_invalid         = false;
   this->_shader_data_invalid = true;

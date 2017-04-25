@@ -1,6 +1,6 @@
 
 DUSK_EXAMPLE(
-  hello
+  triangle
   src/main.c
   assets/triangle.fs
   assets/triangle.vs

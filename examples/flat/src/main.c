@@ -30,7 +30,7 @@ void update(dusk_frame_info_t * finfo)
   vec3f_t rot;
 
   dusk_model_get_rot(&cube, rot);
-  rot[1] += GLMM_RAD(5.0f * finfo->delta);
+  rot[1] += GLMM_RAD(2.0f * finfo->delta);
   if (rot[1] > GLMM_PI)
     rot[1] = 0.0f;
   dusk_model_set_rot(&cube, rot);
@@ -55,7 +55,7 @@ int main(int argc, char ** argv)
   dusk_settings_t settings = DUSK_DEFAULT_SETTINGS;
   settings.window_width    = 640;
   settings.window_height   = 480;
-  settings.window_title    = "Cube";
+  settings.window_title    = "Flat";
   settings.update_func     = &update;
 
   dusk_init(argc, argv, &settings);

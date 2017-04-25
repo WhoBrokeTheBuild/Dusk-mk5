@@ -6,7 +6,7 @@ int main(int argc, char ** argv)
   dusk_settings_t settings = DUSK_DEFAULT_SETTINGS;
   settings.window_width    = 640;
   settings.window_height   = 480;
-  settings.window_title    = "Hello, World";
+  settings.window_title    = "Triangle";
 
   dusk_init(argc, argv, &settings);
 

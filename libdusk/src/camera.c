@@ -77,10 +77,31 @@ void dusk_camera_set_pos(dusk_camera_t * this, vec3f_t pos)
   this->_invalid_view = true;
 }
 
+void dusk_camera_get_pos(dusk_camera_t * this, vec3f_t out_pos)
+{
+  vec3f_copy(out_pos, this->_pos);
+}
+
 void dusk_camera_set_dir(dusk_camera_t * this, vec3f_t dir)
 {
   vec3f_copy(this->_dir, dir);
   this->_invalid_view = true;
+}
+
+void dusk_camera_get_dir(dusk_camera_t * this, vec3f_t out_dir)
+{
+  vec3f_copy(out_dir, this->_dir);
+}
+
+void dusk_camera_set_up(dusk_camera_t * this, vec3f_t up)
+{
+  vec3f_copy(this->_up, up);
+  this->_invalid_view = true;
+}
+
+void dusk_camera_get_up(dusk_camera_t * this, vec3f_t out_up)
+{
+  vec3f_copy(out_up, this->_up);
 }
 
 void dusk_camera_set_look_at(dusk_camera_t * this, vec3f_t look_at)
@@ -89,10 +110,9 @@ void dusk_camera_set_look_at(dusk_camera_t * this, vec3f_t look_at)
   this->_invalid_view = true;
 }
 
-void dusk_camera_set_up(dusk_camera_t * this, vec3f_t up)
+void dusk_camera_get_look_at(dusk_camera_t * this, vec3f_t out_look_at)
 {
-  vec3f_copy(this->_up, up);
-  this->_invalid_view = true;
+  vec3f_copy(out_look_at, this->_look_at);
 }
 
 void dusk_camera_move(dusk_camera_t * this, dusk_camera_dir_t dir, float amount)

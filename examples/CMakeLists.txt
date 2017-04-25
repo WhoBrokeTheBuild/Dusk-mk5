@@ -2,12 +2,13 @@ SET(FOLDER "examples")
 
 INCLUDE("ExampleProject")
 
-ADD_SUBDIRECTORY(hello)
-ADD_SUBDIRECTORY(cube)
+ADD_SUBDIRECTORY(triangle)
+ADD_SUBDIRECTORY(flat)
+ADD_SUBDIRECTORY(phong)
 
 IF(UNIX)
   ADD_CUSTOM_TARGET(
     format-examples
-    DEPENDS format-hello format-cube
+    DEPENDS format-triangle format-flat format-phong
   )
 ENDIF()
