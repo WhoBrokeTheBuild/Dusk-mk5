@@ -57,9 +57,7 @@ void dusk_camera_get_up(dusk_camera_t * this, vec3f_t out_up);
 void dusk_camera_set_look_at(dusk_camera_t * this, vec3f_t look_at);
 void dusk_camera_get_look_at(dusk_camera_t * this, vec3f_t out_look_at);
 
-void dusk_camera_move(dusk_camera_t * this,
-                      dusk_camera_dir_t dir,
-                      float             amount);
+void dusk_camera_move(dusk_camera_t * this, dusk_camera_dir_t dir, float amount);
 
 void dusk_camera_change_pitch(dusk_camera_t * this, float angle);
 void dusk_camera_change_yaw(dusk_camera_t * this, float angle);

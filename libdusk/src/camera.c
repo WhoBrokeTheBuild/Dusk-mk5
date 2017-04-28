@@ -231,8 +231,7 @@ void dusk_camera_update(dusk_camera_t * this)
 
   if (this->_invalid_proj)
   {
-    glmm_perspective(this->proj, this->_aspect, this->_vnear, this->_vfar,
-                     this->_fov);
+    glmm_perspective(this->proj, this->_aspect, this->_vnear, this->_vfar, this->_fov);
     this->_invalid_proj = false;
   }
 }

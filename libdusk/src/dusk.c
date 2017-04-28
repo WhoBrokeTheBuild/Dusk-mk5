@@ -2,6 +2,7 @@
 
 #include "debug.h"
 #include <IL/il.h>
+#include <IL/ilu.h>
 #include <dusk/timer.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -91,8 +92,8 @@ void _dusk_idle_cb()
 
     if (g_settings.display_fps)
     {
-      snprintf(title_buffer, sizeof(title_buffer), "%s - %.2f",
-               g_settings.window_title, g_frame_info.fps);
+      snprintf(title_buffer, sizeof(title_buffer), "%s - %.2f", g_settings.window_title,
+               g_frame_info.fps);
       glutSetWindowTitle(title_buffer);
     }
   }
@@ -147,10 +148,14 @@ bool dusk_init(int argc, char ** argv, dusk_settings_t * settings)
     return false;
   }
 
+  ilInit();
+  iluInit();
+
   dusk_camera = malloc(sizeof(dusk_camera_t));
+  dusk_track_resource(DUSK_RSC_CAMERA, dusk_camera);
+
   dusk_camera_init(dusk_camera);
-  dusk_camera_set_aspect(dusk_camera, g_settings.window_width,
-                         g_settings.window_height);
+  dusk_camera_set_aspect(dusk_camera, g_settings.window_width, g_settings.window_height);
   dusk_camera_set_clip(dusk_camera, 0.001f, 10000.0f);
   dusk_camera_set_fov(dusk_camera, GLMM_RAD(45.0f));
 
@@ -188,5 +193,6 @@ void dusk_run()
 void dusk_term()
 {
   free(g_settings.window_title);
-  free(dusk_camera);
+
+  dusk_free_all_resources();
 }

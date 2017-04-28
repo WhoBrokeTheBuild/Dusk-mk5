@@ -10,7 +10,7 @@ $TEMP_DIR = $env:TEMP
 $GLEW_VERSION     = "2.0.0"
 $FREEGLUT_VERSION = "";
 $FLATCC_VERSION 	= "0.4.1"
-$SOIL_VERSION 		= "2.0.5" # TODO
+$DEVIL_VERSION 		= "1.8.0"
 $VC_DIR = "$($Env:VS140COMNTOOLS)..\..\VC\"
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -43,6 +43,19 @@ Copy-Item "$($TEMP_DIR)\freeglut\lib\*.lib" "$($VC_DIR)\lib\" -Recurse -Force
 Copy-Item "$($TEMP_DIR)\freeglut\bin\*.dll" "$($VC_DIR)\bin\" -Recurse -Force
 Copy-Item "$($TEMP_DIR)\freeglut\lib\x64\*.lib" "$($VC_DIR)\lib\amd64\" -Recurse -Force
 Copy-Item "$($TEMP_DIR)\freeglut\bin\x64\*.dll" "$($VC_DIR)\bin\amd64\" -Recurse -Force
+
+Write-Host "Downloading DevIL"
+# Hardcoded Sourceforge Mirror, might break in the future
+Invoke-WebRequest "https://superb-sea2.dl.sourceforge.net/project/openil/DevIL%20Windows%20SDK/$($DEVIL_VERSION)/DevIL-Windows-SDK-$($DEVIL_VERSION).zip" -OutFile "$($TEMP_DIR)\devil.zip"
+Remove-Item "$($TEMP_DIR)\DevIL Windows SDK" -Recurse -Force | Out-Null
+Unzip "$($TEMP_DIR)\devil.zip" "$($TEMP_DIR)\"
+
+Write-Host "Installing DevIL"
+Copy-Item "$($TEMP_DIR)\DevIL Windows SDK\include\*" "$($VC_DIR)\include\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\DevIL Windows SDK\x86\Release\*.lib" "$($VC_DIR)\lib\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\DevIL Windows SDK\x86\Release\*.dll" "$($VC_DIR)\bin\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\DevIL Windows SDK\x64\Release\*.lib" "$($VC_DIR)\lib\amd64\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\DevIL Windows SDK\x64\Release\*.dll" "$($VC_DIR)\bin\amd64\" -Recurse -Force
 
 Write-Host "Cloning FlatCC"
 Remove-Item "$($TEMP_DIR)\flatcc" -Recurse -Force | Out-Null

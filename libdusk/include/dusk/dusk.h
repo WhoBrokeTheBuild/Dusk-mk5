@@ -6,6 +6,7 @@
 #include <dusk/dmf.h>
 #include <dusk/mesh.h>
 #include <dusk/model.h>
+#include <dusk/resource.h>
 #include <dusk/shader.h>
 
 typedef struct dusk_frame_info

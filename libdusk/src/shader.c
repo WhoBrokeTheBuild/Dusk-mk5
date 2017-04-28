@@ -39,8 +39,7 @@ bool dusk_shader_init(dusk_shader_t * this, const dusk_shader_file_t * shaders)
   {
     if (i > _MAX_SHADER_COUNT)
     {
-      DEBUG_ERROR("Exceeded maximum number of shaders allowed %d",
-                  _MAX_SHADER_COUNT);
+      DEBUG_ERROR("Exceeded maximum number of shaders allowed %d", _MAX_SHADER_COUNT);
       goto error;
     }
 
@@ -103,10 +102,7 @@ void dusk_shader_term(dusk_shader_t * this)
   glDeleteProgram(this->program);
 }
 
-int dusk_shader_add_data(dusk_shader_t * this,
-                         const char * name,
-                         void *       data,
-                         size_t       size)
+int dusk_shader_add_data(dusk_shader_t * this, const char * name, void * data, size_t size)
 {
   assert(NULL != this);
 
@@ -207,8 +203,8 @@ bool _dusk_shader_program_print_log(GLuint program)
   glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_size);
   if (log_size > _MAX_LOG_SIZE)
   {
-    DEBUG_ERROR("Program log for %d exceeds maximum size allowed (%d > %d)",
-                program, log_size, _MAX_LOG_SIZE);
+    DEBUG_ERROR("Program log for %d exceeds maximum size allowed (%d > %d)", program, log_size,
+                _MAX_LOG_SIZE);
     goto error;
   }
 
@@ -258,8 +254,8 @@ bool _dusk_shader_print_log(GLuint shader)
   glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_size);
   if (log_size > _MAX_LOG_SIZE)
   {
-    DEBUG_ERROR("Shader log for %d exceeds maximum size allowed (%d > %d)",
-                shader, log_size, _MAX_LOG_SIZE);
+    DEBUG_ERROR("Shader log for %d exceeds maximum size allowed (%d > %d)", shader, log_size,
+                _MAX_LOG_SIZE);
     goto error;
   }
 
@@ -312,8 +308,7 @@ GLuint _dusk_shader_load(const char * filename, GLenum shader_type)
 
   if (file_size > _MAX_SHADER_SIZE)
   {
-    DEBUG_ERROR("Shader exceeds maximum size allowed (%ld > %d)", file_size,
-                _MAX_SHADER_SIZE);
+    DEBUG_ERROR("Shader exceeds maximum size allowed (%ld > %d)", file_size, _MAX_SHADER_SIZE);
     goto error;
   }
 
@@ -327,8 +322,8 @@ GLuint _dusk_shader_load(const char * filename, GLenum shader_type)
   bytes_read = fread(shader_str, 1, file_size, fp);
   if (bytes_read != file_size)
   {
-    DEBUG_ERROR("Failed to read whole shader file '%s' read %zu/%ld", filename,
-                bytes_read, file_size);
+    DEBUG_ERROR("Failed to read whole shader file '%s' read %zu/%ld", filename, bytes_read,
+                file_size);
     goto error;
   }
   shader_str[file_size] = '\0';

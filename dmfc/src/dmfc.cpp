@@ -49,8 +49,7 @@ bool load_obj(const string & filename, FlatBufferBuilder & fbb)
 
   string dirname = GetDirname(filename) + "/";
 
-  ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str(),
-                         dirname.c_str());
+  ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str(), dirname.c_str());
 
   if (!ret)
   {
@@ -113,45 +112,28 @@ bool load_obj(const string & filename, FlatBufferBuilder & fbb)
 
         if (has_txcds)
         {
-          txcds[(index + v) * 2 + 0] =
-              attrib.texcoords[2 * idx.texcoord_index + 0];
-          txcds[(index + v) * 2 + 1] =
-              attrib.texcoords[2 * idx.texcoord_index + 1];
+          txcds[(index + v) * 2 + 0] = attrib.texcoords[2 * idx.texcoord_index + 0];
+          txcds[(index + v) * 2 + 1] = attrib.texcoords[2 * idx.texcoord_index + 1];
         }
       }
       index += fv;
     }
 
-    auto vert_vec =
-        fbb.CreateVectorOfStructs((Vec3 *)verts.data(), verts.size() / 3);
-    auto norm_vec =
-        fbb.CreateVectorOfStructs((Vec3 *)norms.data(), norms.size() / 3);
-    auto txcd_vec =
-        fbb.CreateVectorOfStructs((Vec2 *)txcds.data(), txcds.size() / 2);
+    auto vert_vec = fbb.CreateVectorOfStructs((Vec3 *)verts.data(), verts.size() / 3);
+    auto norm_vec = fbb.CreateVectorOfStructs((Vec3 *)norms.data(), norms.size() / 3);
+    auto txcd_vec = fbb.CreateVectorOfStructs((Vec2 *)txcds.data(), txcds.size() / 2);
 
     Offset<Material> dmf_mat;
     if (NULL != mat)
     {
-      auto mat_name = fbb.CreateString(mat->name);
       auto ambient  = Color(mat->ambient[0], mat->ambient[1], mat->ambient[2]);
       auto diffuse  = Color(mat->diffuse[0], mat->diffuse[1], mat->diffuse[2]);
-      auto specular =
-          Color(mat->specular[0], mat->specular[1], mat->specular[2]);
-      auto ambient_map  = fbb.CreateString(mat->ambient_texname);
-      auto diffuse_map  = fbb.CreateString(mat->diffuse_texname);
-      auto specular_map = fbb.CreateString(mat->specular_texname);
-      auto bump_map     = fbb.CreateString(mat->bump_texname);
+      auto specular = Color(mat->specular[0], mat->specular[1], mat->specular[2]);
 
-      MaterialBuilder mb(fbb);
-      mb.add_name(mat_name);
-      mb.add_ambient(&ambient);
-      mb.add_diffuse(&diffuse);
-      mb.add_specular(&specular);
-      mb.add_ambient_map(ambient_map);
-      mb.add_diffuse_map(diffuse_map);
-      mb.add_specular_map(specular_map);
-      mb.add_bump_map(bump_map);
-      dmf_mat = mb.Finish();
+      dmf_mat = CreateMaterialDirect(fbb, mat->name.c_str(), &ambient, &diffuse, &specular,
+                                     mat->shininess, mat->dissolve, mat->ambient_texname.c_str(),
+                                     mat->diffuse_texname.c_str(), mat->specular_texname.c_str(),
+                                     mat->bump_texname.c_str());
     }
 
     ShapeBuilder sb(fbb);
@@ -169,9 +151,7 @@ bool load_obj(const string & filename, FlatBufferBuilder & fbb)
   return true;
 }
 
-bool save_dmf(const string &        old_filename,
-              const unsigned char * buffer,
-              const size_t &        size)
+bool save_dmf(const string & old_filename, const unsigned char * buffer, const size_t & size)
 {
   const size_t CHUNK_SIZE  = 131072; // 128K
   const int    FILEID_SIZE = 4;

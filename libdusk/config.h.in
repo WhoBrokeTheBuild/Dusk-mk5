@@ -11,6 +11,8 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#define DUSK_MAX_PATH 1024
+
 // clang-format on
 
 #endif // DUSK_CONFIG_H

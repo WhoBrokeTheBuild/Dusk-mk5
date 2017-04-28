@@ -1,23 +1,53 @@
 #include "dusk/texture.h"
 
-#include <SOIL/SOIL.h>
+#include "debug.h"
+#include <IL/il.h>
+#include <IL/ilu.h>
 
-bool dusk_texture_init(dusk_texture_t * this, const char * filename)
+GLuint dusk_texture_load(const char * filename)
 {
-  this->_texture = SOIL_load_OGL_texture(filename,
-    SOIL_LOAD_AUTO,
-    SOIL_CREATE_NEW_ID,
-    SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+  DEBUG_INFO("Loading image %s", filename);
 
-  if( 0 == this->_texture )
+  ILuint image   = 0;
+  GLuint texture = 0;
+
+  ilGenImages(1, &image);
+  ilBindImage(image);
+
+  if (!ilLoadImage(filename))
   {
-  	DEBUG_ERROR( "SOIL loading error: '%s'", SOIL_last_result() );
-    return false;
+    DEBUG_ERROR("Failed to load %s: %s", filename, iluErrorString(ilGetError()));
+    goto error;
   }
 
-  return true;
-}
+  ILinfo ImageInfo;
+  iluGetImageInfo(&ImageInfo);
+  if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+  {
+    iluFlipImage();
+  }
 
-void dusk_texture_term(dusk_texture_t * this)
-{
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_WIDTH),
+               ilGetInteger(IL_IMAGE_HEIGHT), 0,
+               ilGetInteger(IL_IMAGE_FORMAT), // Format of image pixel data
+               GL_UNSIGNED_BYTE, ilGetData());
+
+  glGenerateMipmap(GL_TEXTURE_2D);
+
+error:
+
+  ilDeleteImages(1, &image);
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  return texture;
 }

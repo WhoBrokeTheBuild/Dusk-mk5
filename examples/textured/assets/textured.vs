@@ -17,41 +17,39 @@ layout(std140) uniform ModelData
   mat4 view;
   mat4 proj;
   mat4 mvp;
+}
+model_data;
 
+layout(std140) uniform MeshData
+{
   vec4 ambient;
   vec4 diffuse;
   vec4 specular;
 
   float shininess;
+  float dissolve;
 
   bool has_ambient_map;
   bool has_diffuse_map;
   bool has_specular_map;
   bool has_bump_map;
 }
-model_data;
+mesh_data;
 
-uniform sampler2D bump_map;
-
-out vec4 position;
-out vec4 normal;
-out vec2 texcoord;
+out vec4 p_position;
+out vec4 p_normal;
+out vec2 p_texcoord;
 
 out vec3 light_dir;
 out vec3 view_dir;
 
 void main()
 {
-  texcoord = in_texcoord;
+  p_texcoord = in_texcoord;
+  p_position = model_data.model * vec4(in_position, 1.0);
+  p_normal   = model_data.model * vec4(in_normal, 1.0);
 
-  normal = vec4(in_normal, 1.0);
-  if (model_data.has_bump_map)
-    normal = vec4(2.0f * texture(bump_map, texcoord).rgb - 1.0, 1.0);
-
-  position = model_data.model * vec4(in_position, 1.0);
-  normal   = model_data.model * normal;
-
-  vec3 position_worldspace = vec3(model_data.model * position);
+  vec3 position_worldspace = vec3(model_data.model * p_position);
 
   light_dir = textured_data.light_pos - position_worldspace;
   light_dir = normalize(light_dir);

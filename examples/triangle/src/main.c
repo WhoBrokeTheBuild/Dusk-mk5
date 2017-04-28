@@ -19,8 +19,7 @@ int main(int argc, char ** argv)
   printf("GLMM Version: %s\n", GLMM_VER_STRING);
   printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
-  printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR,
-         GLEW_VERSION_MICRO);
+  printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
   typedef struct
   {
@@ -39,18 +38,24 @@ int main(int argc, char ** argv)
   };
 
   dusk_shader_init(&triangle_shader, triangle_files);
-  dusk_shader_add_data(&triangle_shader, "TriangleData", (void *)&data,
-                       sizeof(triangle_data_t));
+  dusk_shader_add_data(&triangle_shader, "TriangleData", (void *)&data, sizeof(triangle_data_t));
+
+  // clang-format off
 
   static const GLfloat verts[] = {
-      -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+      -1.0f, -1.0f, 0.0f,
+       1.0f, -1.0f, 0.0f,
+       0.0f,  1.0f, 0.0f,
   };
 
-  dusk_mesh_t triangle_mesh;
-  dusk_mesh_init(&triangle_mesh, 3, verts, NULL, NULL);
+  // clang-format on
 
-  dusk_model_t triangle;
-  dusk_model_init(&triangle, NULL, 1, &triangle_mesh, &triangle_shader);
+  dusk_mesh_t triangle_mesh;
+  dusk_mesh_init(&triangle_mesh, NULL, 3, verts, NULL, NULL, &triangle_shader);
+
+  dusk_model_t  triangle;
+  dusk_mesh_t * meshes = {&triangle_mesh};
+  dusk_model_init(&triangle, 1, &meshes, &triangle_shader);
   dusk_models[0] = &triangle;
 
   dusk_run();

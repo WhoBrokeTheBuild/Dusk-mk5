@@ -88,8 +88,7 @@ dmf_Model_table_t dusk_load_dmf(const char * filename, unsigned char ** buffer)
 
   if (0 != (zerr = dmf_Model_verify_as_root(*buffer, size)))
   {
-    DEBUG_ERROR("Failed to verify buffer: %s",
-                flatcc_verify_error_string(zerr));
+    DEBUG_ERROR("Failed to verify buffer: %s", flatcc_verify_error_string(zerr));
     goto error;
   }
   return dmf_Model_as_root(*buffer);

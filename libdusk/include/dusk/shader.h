@@ -24,17 +24,13 @@ typedef struct dusk_shader_data
 typedef struct dusk_shader
 {
   GLuint program;
-
 } dusk_shader_t;
 
 bool dusk_shader_init(dusk_shader_t * this, const dusk_shader_file_t * shaders);
 
 void dusk_shader_term(dusk_shader_t * this);
 
-int dusk_shader_add_data(dusk_shader_t * this,
-                         const char * name,
-                         void *       data,
-                         size_t       size);
+int dusk_shader_add_data(dusk_shader_t * this, const char * name, void * data, size_t size);
 
 void dusk_shader_set_data(dusk_shader_t * this, int index, void * data);
 

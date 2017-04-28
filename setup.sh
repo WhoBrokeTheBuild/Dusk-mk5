@@ -18,7 +18,7 @@ case $distro in
       glew \
       freeglut \
       zlib \
-      soil
+      devil
     ;;
   redhat)
     sudo yum install -y \
@@ -27,7 +27,7 @@ case $distro in
       gcc \
       glew-devel \
       freeglut-devel \
-      SOIL-devel
+      DevIL-devel
     ;;
 debian)
 	sudo apt-get install -y \
@@ -37,14 +37,14 @@ debian)
     libglew-dev \
     freeglut-dev \
     zlib1g-dev \
-    libsoil-dev
+    libdevil-dev
 	;;
   * )
     echo "Unsupported Distro"
   ;;
 esac
 
-git clone git@github.com:dvidelabs/flatcc.git /tmp/flatcc
+git clone https://github.com/dvidelabs/flatcc.git /tmp/flatcc
 cd /tmp/flatcc
 scripts/initbuild.sh make-concurrent
 scripts/build.sh
