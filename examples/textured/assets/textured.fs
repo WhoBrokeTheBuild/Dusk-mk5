@@ -71,8 +71,10 @@ void main()
 
   vec3  halfway_dir = normalize(light_dir + view_dir);
   float spec        = max(0.0, dot(normal.xyz, halfway_dir));
-  // if (mesh_data.shininess > 0)
-  spec = pow(spec, mesh_data.shininess);
+  if (mesh_data.shininess > 0)
+  {
+    spec = pow(spec, mesh_data.shininess);
+  }
 
   if (mesh_data.has_specular_map)
   {

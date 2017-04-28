@@ -49,12 +49,10 @@ void main()
   p_position = model_data.model * vec4(in_position, 1.0);
   p_normal   = model_data.model * vec4(in_normal, 1.0);
 
-  vec3 position_worldspace = vec3(model_data.model * p_position);
-
-  light_dir = textured_data.light_pos - position_worldspace;
+  light_dir = textured_data.light_pos - p_position.xyz;
   light_dir = normalize(light_dir);
 
-  view_dir = textured_data.camera_pos - position_worldspace;
+  view_dir = textured_data.camera_pos - p_position.xyz;
   view_dir = normalize(view_dir);
 
   gl_Position = model_data.mvp * vec4(in_position, 1.0);

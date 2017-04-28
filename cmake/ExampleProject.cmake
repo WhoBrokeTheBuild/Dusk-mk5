@@ -81,4 +81,4 @@ MACRO(DUSK_EXAMPLE EX_NAME)
     )
   ENDIF()
 
-endmacro()
+ENDMACRO()

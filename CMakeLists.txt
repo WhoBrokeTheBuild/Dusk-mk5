@@ -9,8 +9,6 @@ IF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   MESSAGE(SEND_ERROR "In-source builds are not allowed.")
 ENDIF()
 
-SET(ALL_SRC "")
-
 ### Set compiler-specific flags
 IF(CMAKE_COMPILER_IS_GNUCC OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
   SET(COMMON_FLAGS
