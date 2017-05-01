@@ -11,17 +11,17 @@
 
 typedef struct dusk_mesh_data
 {
-  _Alignas(16) vec4f_t ambient;
-  _Alignas(16) vec4f_t diffuse;
-  _Alignas(16) vec4f_t specular;
+  dusk_Alignas(16) vec4f_t ambient;
+  dusk_Alignas(16) vec4f_t diffuse;
+  dusk_Alignas(16) vec4f_t specular;
 
-  _Alignas(4) float shininess;
-  _Alignas(4) float dissolve;
+  dusk_Alignas(4) float shininess;
+  dusk_Alignas(4) float dissolve;
 
-  _Alignas(4) bool has_ambient_map;
-  _Alignas(4) bool has_diffuse_map;
-  _Alignas(4) bool has_specular_map;
-  _Alignas(4) bool has_bump_map;
+  dusk_Alignas(4) bool has_ambient_map;
+  dusk_Alignas(4) bool has_diffuse_map;
+  dusk_Alignas(4) bool has_specular_map;
+  dusk_Alignas(4) bool has_bump_map;
 
 } dusk_mesh_data_t;
 

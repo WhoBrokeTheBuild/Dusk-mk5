@@ -13,6 +13,21 @@
 
 #define DUSK_MAX_PATH 1024
 
+#cmakedefine HAVE_STDALIGN_H
+#cmakedefine HAVE_LIBGEN_H
+
+#ifdef HAVE_STDALIGN_H
+#include <stdalign.h>
+#endif // HAVE_STDALIGN_H
+
+#ifdef _MSC_VER
+#define dusk_Alignas(t) __declspec (align(t))
+#define dusk_Alignof(t) __alignof(t)
+#else
+#define dusk_Alignas(t) _Alignas(t)
+#define dusk_Alignof(t) _Alignof(t)
+#endif
+
 // clang-format on
 
 #endif // DUSK_CONFIG_H

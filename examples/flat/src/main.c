@@ -27,12 +27,10 @@ dusk_model_t * cube;
 
 void update(dusk_frame_info_t * finfo)
 {
-  vec3f_t rot;
-
-  dusk_model_get_rot(cube, rot);
-  rot[1] += GLMM_RAD(2.0f * finfo->delta);
-  if (rot[1] > GLMM_PI)
-    rot[1] = 0.0f;
+  vec3f_t rot = dusk_model_get_rot(cube);
+  rot.y += GLMM_RAD(2.0f * finfo->delta);
+  if (rot.y > GLMM_PI)
+    rot.y = 0.0f;
   dusk_model_set_rot(cube, rot);
 
   color_change_delay -= finfo->elapsed_time;
@@ -45,7 +43,7 @@ void update(dusk_frame_info_t * finfo)
       color_index = 0;
     }
 
-    vec4f_copy(flat_data.color, COLORS[color_index]);
+    vec4f_copy(&flat_data.color, &COLORS[color_index]);
     dusk_shader_set_data(&flat_shader, flat_data_index, (void *)&flat_data);
   }
 }
@@ -73,7 +71,7 @@ int main(int argc, char ** argv)
 
   color_index        = 0;
   color_change_delay = MAX_COLOR_CHANGE_DELAY;
-  vec4f_copy(flat_data.color, COLORS[color_index]);
+  vec4f_copy(&flat_data.color, &COLORS[color_index]);
 
   dusk_shader_file_t flat_files[] = {
       {GL_VERTEX_SHADER, "assets/flat.vs"}, {GL_FRAGMENT_SHADER, "assets/flat.fs"}, {0, NULL},

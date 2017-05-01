@@ -9,7 +9,7 @@ void dusk_camera_init(dusk_camera_t * this)
   vec3f_init(&this->_pos, 0.0f);
   vec3f_init(&this->_dir, 0.0f);
   vec3f_init(&this->_up, 0.0f);
-  this->_up[1] = 1.0f;
+  this->_up.z = 1.0f;
 
   vec3f_init(&this->_pos_delta, 0.0f);
 
@@ -95,7 +95,7 @@ void dusk_camera_set_up(dusk_camera_t * this, const vec3f_t up)
 
 vec3f_t dusk_camera_get_up(dusk_camera_t * this)
 {
-  vec3f_t tmp = this->up;
+  vec3f_t tmp = this->_up;
   return tmp;
 }
 
@@ -107,7 +107,7 @@ void dusk_camera_set_look_at(dusk_camera_t * this, const vec3f_t look_at)
 
 vec3f_t dusk_camera_get_look_at(dusk_camera_t * this)
 {
-  vec3f_t tmp = this->_look_at
+  vec3f_t tmp = this->_look_at;
   return tmp;
 }
 
@@ -205,8 +205,8 @@ void dusk_camera_update(dusk_camera_t * this)
     vec3f_norm(&this->_dir);
 
     vec3f_xcross(&pitch_axis, &this->_dir, &this->_up);
-    angle_axis(&pitch_quat, &this->_pitch, &pitch_axis);
-    angle_axis(&yaw_quat, &this->_yaw, &this->_up);
+    angle_axis(&pitch_quat, this->_pitch, &pitch_axis);
+    angle_axis(&yaw_quat, this->_yaw, &this->_up);
 
     quat_xcross(&tmp, &pitch_quat, &yaw_quat);
     quat_norm(&tmp);

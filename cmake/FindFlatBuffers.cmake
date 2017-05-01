@@ -18,42 +18,60 @@
 # Output Variables:
 # * FLATBUFFERS_FLATC_EXECUTABLE the flatc compiler executable
 # * FLATBUFFERS_FOUND
+# * FLATBUFFERS_INCLUDE_DIRS
 #
 # Provides:
 # * FLATBUFFERS_GENERATE_C_HEADERS(Name <files>) creates the C++ headers
 #   for the given flatbuffer schema files.
 #   Returns the header files in ${Name}_OUTPUTS
 
-set(FLATBUFFERS_CMAKE_DIR ${CMAKE_CURRENT_LIST_DIR})
+SET(FLATBUFFERS_CMAKE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
-find_program(FLATBUFFERS_FLATC_EXECUTABLE NAMES flatc)
-find_path(FLATBUFFERS_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h)
+find_program(
+  FLATBUFFERS_FLATC_EXECUTABLE
+  NAMES flatc
+  PATHS ${FLATBUFFERS_PATH}
+  PATH_SUFFIXES bin/amd64 bin
+)
+FIND_PATH(
+  FLATBUFFERS_INCLUDE_DIRS
+  NAMES flatbuffers/flatbuffers.h
+  PATHS ${FLATBUFFERS_PATH}
+  PATH_SUFFIXES include
+)
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(flatbuffers
-  DEFAULT_MSG FLATBUFFERS_FLATC_EXECUTABLE FLATBUFFERS_INCLUDE_DIR)
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(
+  flatbuffers
+  REQUIRED_VARS
+  FLATBUFFERS_FLATC_EXECUTABLE
+  FLATBUFFERS_INCLUDE_DIRS
+)
 
-if(FLATBUFFERS_FOUND)
-  function(FLATBUFFERS_GENERATE_C_HEADERS Name)
-    set(FLATC_OUTPUTS)
-    foreach(FILE ${ARGN})
-      get_filename_component(FLATC_OUTPUT ${FILE} NAME_WE)
-      set(FLATC_OUTPUT
-        "${CMAKE_CURRENT_BINARY_DIR}/${FLATC_OUTPUT}_generated.h")
-      list(APPEND FLATC_OUTPUTS ${FLATC_OUTPUT})
+IF(FLATBUFFERS_FOUND)
+  FUNCTION(FLATBUFFERS_GENERATE_C_HEADERS Name)
+    SET(FLATC_OUTPUTS)
+    FOREACH(FILE ${ARGN})
+      GET_FILENAME_COMPONENT(FLATC_OUTPUT ${FILE} NAME_WE)
+      SET(
+        FLATC_OUTPUT
+        "${CMAKE_CURRENT_BINARY_DIR}/${FLATC_OUTPUT}_generated.h"
+      )
+      LIST(APPEND FLATC_OUTPUTS ${FLATC_OUTPUT})
 
-      add_custom_command(OUTPUT ${FLATC_OUTPUT}
+      ADD_CUSTOM_COMMAND(OUTPUT ${FLATC_OUTPUT}
         DEPENDS ${FILE}
         COMMAND ${FLATBUFFERS_FLATC_EXECUTABLE}
         ARGS -c -o "${CMAKE_CURRENT_BINARY_DIR}/" ${FILE}
         COMMENT "Building C++ header for ${FILE}"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    endforeach()
-    set(${Name}_OUTPUTS ${FLATC_OUTPUTS} PARENT_SCOPE)
-  endfunction()
+    ENDFOREACH()
+    SET(
+      ${Name}_OUTPUTS
+      ${FLATC_OUTPUTS}
+      PARENT_SCOPE
+    )
+  ENDFUNCTION()
 
-  set(FLATBUFFERS_INCLUDE_DIRS ${FLATBUFFERS_INCLUDE_DIR})
-  include_directories(${CMAKE_BINARY_DIR})
-else()
-  set(FLATBUFFERS_INCLUDE_DIR)
-endif()
+  INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
+ENDIF()

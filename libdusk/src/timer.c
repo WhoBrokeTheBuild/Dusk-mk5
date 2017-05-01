@@ -4,7 +4,7 @@ void dusk_timer_start(dusk_timer_t * this)
 {
   this->_started = true;
 #ifdef WIN32
-  this->point = clock();
+  this->_point = clock();
 #else
   clock_getres(CLOCK_MONOTONIC, &this->_res);
   clock_gettime(CLOCK_MONOTONIC, &this->_point);
@@ -19,7 +19,7 @@ double dusk_timer_get_ms(dusk_timer_t * this)
   }
 
 #ifdef WIN32
-  return ((clock() - start) * 1000.0) / CLOCKS_PER_SEC;
+  return ((clock() - this->_point) * 1000.0) / CLOCKS_PER_SEC;
 #else
   struct timespec now;
   struct timespec diff;

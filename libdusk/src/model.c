@@ -1,8 +1,8 @@
 #include "dusk/model.h"
 
 #include "debug.h"
+#include "util.h"
 #include <dusk/dusk.h>
-#include <libgen.h>
 #include <string.h>
 
 void _dusk_model_update_mat(dusk_model_t * this);
@@ -18,9 +18,9 @@ void dusk_model_init(dusk_model_t * this,
   this->_meshes     = (dusk_mesh_t **)malloc(sizeof(dusk_mesh_t *) * this->_mesh_count);
   memcpy(this->_meshes, meshes, sizeof(dusk_mesh_t *) * this->_mesh_count);
 
-  vec3f_init(this->_pos, 0.0f);
-  vec3f_init(this->_rot, 0.0f);
-  vec3f_init(this->_scale, 1.0f);
+  vec3f_init(&this->_pos, 0.0f);
+  vec3f_init(&this->_rot, 0.0f);
+  vec3f_init(&this->_scale, 1.0f);
 
   glUseProgram(shader->program);
   glUniform1i(glGetUniformLocation(shader->program, "ambient_map"), DUSK_MATERIAL_AMBIENT_TEXID);
@@ -63,53 +63,50 @@ void dusk_model_render(dusk_model_t * this)
   }
 }
 
-void dusk_model_get_pos(dusk_model_t * this, vec3f_t out_pos)
+vec3f_t dusk_model_get_pos(dusk_model_t * this)
 {
-  vec3f_copy(out_pos, this->_pos);
-  this->_mat_invalid = true;
+  return this->_pos;
 }
 
 void dusk_model_set_pos(dusk_model_t * this, vec3f_t pos)
 {
-  vec3f_copy(this->_pos, pos);
+  vec3f_copy(&this->_pos, &pos);
   this->_mat_invalid = true;
 }
 
-void dusk_model_get_rot(dusk_model_t * this, vec3f_t out_rot)
+vec3f_t dusk_model_get_rot(dusk_model_t * this)
 {
-  vec3f_copy(out_rot, this->_rot);
-  this->_mat_invalid = true;
+  return this->_rot;
 }
 
 void dusk_model_set_rot(dusk_model_t * this, vec3f_t rot)
 {
-  vec3f_copy(this->_rot, rot);
+  vec3f_copy(&this->_rot, &rot);
   this->_mat_invalid = true;
 }
 
-void dusk_model_get_scale(dusk_model_t * this, vec3f_t out_scale)
+vec3f_t dusk_model_get_scale(dusk_model_t * this)
 {
-  vec3f_copy(out_scale, this->_scale);
-  this->_mat_invalid = true;
+  return this->_scale;
 }
 
 void dusk_model_set_scale(dusk_model_t * this, vec3f_t scale)
 {
-  vec3f_copy(this->_scale, scale);
+  vec3f_copy(&this->_scale, &scale);
   this->_mat_invalid = true;
 }
 
 void _dusk_model_update_mat(dusk_model_t * this)
 {
-  mat4x4_init(this->_mat, 1.0f);
+  mat4x4_init(&this->_mat, 1.0f);
 
-  mat4x4_scale(this->_mat, this->_scale);
+  mat4x4_scale(&this->_mat, &this->_scale);
 
-  mat4x4_rotate(this->_mat, this->_rot[0], (vec3f_t){1.0f, 0.0f, 0.0f});
-  mat4x4_rotate(this->_mat, this->_rot[1], (vec3f_t){0.0f, 1.0f, 0.0f});
-  mat4x4_rotate(this->_mat, this->_rot[2], (vec3f_t){0.0f, 0.0f, 1.0f});
+  mat4x4_rotate(&this->_mat, this->_rot.z, &(vec3f_t){1.0f, 0.0f, 0.0f});
+  mat4x4_rotate(&this->_mat, this->_rot.y, &(vec3f_t){0.0f, 1.0f, 0.0f});
+  mat4x4_rotate(&this->_mat, this->_rot.z, &(vec3f_t){0.0f, 0.0f, 1.0f});
 
-  mat4x4_translate(this->_mat, this->_pos);
+  mat4x4_translate(&this->_mat, &this->_pos);
 
   this->_mat_invalid         = false;
   this->_shader_data_invalid = true;
@@ -119,12 +116,12 @@ void _dusk_model_update_shader_data(dusk_model_t * this)
 {
   dusk_model_data_t * data = &this->_shader_data;
 
-  mat4x4_copy(data->model, this->_mat);
-  mat4x4_copy(data->view, dusk_camera->view);
-  mat4x4_copy(data->proj, dusk_camera->proj);
+  mat4x4_copy(&data->model, &this->_mat);
+  mat4x4_copy(&data->view, &dusk_camera->view);
+  mat4x4_copy(&data->proj, &dusk_camera->proj);
 
-  mat4x4_xmul(data->mvp, data->proj, data->view);
-  mat4x4_mul(data->mvp, data->model);
+  mat4x4_xmul(&data->mvp, &data->proj, &data->view);
+  mat4x4_mul(&data->mvp, &data->model);
 
   this->_shader_data_invalid = false;
 }
@@ -185,9 +182,9 @@ dusk_model_t * dusk_load_model_from_file(const char * filename, dusk_shader_t * 
       vec4f_t ambient  = {0.0f, 0.0f, 0.0f, 1.0f};
       vec4f_t diffuse  = {0.0f, 0.0f, 0.0f, 1.0f};
       vec4f_t specular = {0.0f, 0.0f, 0.0f, 1.0f};
-      vec3f_copy(ambient, (float *)dmf_ambient);
-      vec3f_copy(diffuse, (float *)dmf_diffuse);
-      vec3f_copy(specular, (float *)dmf_specular);
+      vec3f_copy((vec3f_t *)&ambient, (vec3f_t *)dmf_ambient);
+      vec3f_copy((vec3f_t *)&diffuse, (vec3f_t *)dmf_diffuse);
+      vec3f_copy((vec3f_t *)&specular, (vec3f_t *)dmf_specular);
 
       size_t map_filename_len;
 

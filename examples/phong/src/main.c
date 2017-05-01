@@ -16,12 +16,10 @@ dusk_model_t * monkey;
 
 void update(dusk_frame_info_t * finfo)
 {
-  vec3f_t rot;
-
-  dusk_model_get_rot(monkey, rot);
-  rot[1] += GLMM_RAD(2.0f * finfo->delta);
-  if (rot[1] > (2.0f * GLMM_PI))
-    rot[1] = 0.0f;
+  vec3f_t rot = dusk_model_get_rot(monkey);
+  rot.y += GLMM_RAD(2.0f * finfo->delta);
+  if (rot.y > (2.0f * GLMM_PI))
+    rot.y = 0.0f;
   dusk_model_set_rot(monkey, rot);
 }
 
@@ -46,10 +44,9 @@ int main(int argc, char ** argv)
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
   printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
-  vec3f_t cam_pos;
-  dusk_camera_get_pos(dusk_camera, cam_pos);
-  vec3f_copy(phong_data.light_pos, cam_pos);
-  vec3f_copy(phong_data.camera_pos, cam_pos);
+  vec3f_t cam_pos = dusk_camera_get_pos(dusk_camera);
+  vec3f_copy(&phong_data.light_pos, &cam_pos);
+  vec3f_copy(&phong_data.camera_pos, &cam_pos);
 
   dusk_shader_file_t phong_files[] = {
       {GL_VERTEX_SHADER, "assets/phong.vs"}, {GL_FRAGMENT_SHADER, "assets/phong.fs"}, {0, NULL},

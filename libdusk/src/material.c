@@ -1,6 +1,5 @@
 #include "dusk/material.h"
 
-#include <SOIL/SOIL.h>
 #include <dusk/texture.h>
 
 void dusk_material_init(dusk_material_t * this,
@@ -14,9 +13,9 @@ void dusk_material_init(dusk_material_t * this,
                         const char * specular_map,
                         const char * bump_map)
 {
-  vec4f_copy(this->ambient, ambient);
-  vec4f_copy(this->diffuse, diffuse);
-  vec4f_copy(this->specular, specular);
+  vec4f_copy(&this->ambient, &ambient);
+  vec4f_copy(&this->diffuse, &diffuse);
+  vec4f_copy(&this->specular, &specular);
 
   this->shininess = shininess;
   this->dissolve  = dissolve;

@@ -1,5 +1,4 @@
 #include <dusk/dusk.h>
-#include <libgen.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -18,18 +17,18 @@ dusk_model_t * crate;
 
 void update(dusk_frame_info_t * finfo)
 {
-  vec3f_t rot;
-
-  dusk_model_get_rot(crate, rot);
-  rot[1] += GLMM_RAD(0.3f * finfo->delta);
-  if (rot[1] > (2.0f * GLMM_PI))
-    rot[1] = 0.0f;
+  vec3f_t rot = dusk_model_get_rot(crate);
+  rot.y += GLMM_RAD(0.3f * finfo->delta);
+  if (rot.y > (2.0f * GLMM_PI))
+    rot.y = 0.0f;
   dusk_model_set_rot(crate, rot);
 
+#ifndef _MSC_VER
   struct timespec ts;
   ts.tv_sec  = 0;
   ts.tv_nsec = 10000;
   nanosleep(&ts, NULL);
+#endif 
 }
 
 int main(int argc, char ** argv)
@@ -59,10 +58,9 @@ int main(int argc, char ** argv)
 
   dusk_camera_update(dusk_camera);
 
-  vec3f_t cam_pos;
-  dusk_camera_get_pos(dusk_camera, cam_pos);
-  vec3f_copy(textured_data.light_pos, (vec3f_t){5.0f, 5.0f, 5.0f});
-  vec3f_copy(textured_data.camera_pos, cam_pos);
+  vec3f_t cam_pos = dusk_camera_get_pos(dusk_camera);
+  vec3f_copy(&textured_data.light_pos, &(vec3f_t){5.0f, 5.0f, 5.0f});
+  vec3f_copy(&textured_data.camera_pos, &cam_pos);
 
   dusk_shader_file_t textured_files[] = {
       {GL_VERTEX_SHADER, "assets/textured.vs"},
