@@ -1,72 +1,91 @@
-# - Locate DEVIL library
-# This module defines
-# DEVIL_LIBRARY, the name of the library to link against
-# DEVIL_FOUND
-# DEVIL_INCLUDE_DIR, where to find DEVIL.h
-# To Adding search path, set DEVIL_ROOT_DIR as follows
-# set(DEVIL_ROOT_DIR "path/to/DEVIL")
-# or launch cmake with -DDEVIL_ROOT_DIR="/path/to/DEVIL_ROOT_DIR".
+# Copyright 2017 Stephen Lane-Walsh
+# Licensed under the MIT License
+
+# Find DevIL Include Files
 #
-# author: Kazunori Kimura
-# email : kazunori.abu@gmail.com
+# Output Variables
+# - DEVIL_FOUND
+# - IL_INCLUDE_DIRS
+# - IL_LIBRARIES
+# - ILU_LIBRARIES
+# - ILUT_LIBRARIES
 #
-# revisions: github.com/zwookie
 
 SET(
   DEVIL_SEARCH_PATHS
   ${DEVIL_PATH}
-  # Unix
-  /usr/local
-  /usr
-  /opt
-  # OSX
-  ~/Library/Frameworks
-  /Library/Frameworks
-  # Visual Studio
   $ENV{VS140COMNTOOLS}../../VC # VS 2015
   $ENV{VS120COMNTOOLS}../../VC # VS 2013
   $ENV{VS110COMNTOOLS}../../VC # VS 2012
   $ENV{VS100COMNTOOLS}../../VC # VS 2010
 )
 
-find_path(
-  DEVIL_INCLUDE_DIR
+# Determine 32-bit or 64-bit library path suffixes
+IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	SET(LIB_PATH_SUFFIXES lib64 lib/x64 lib/amd64 lib)
+ELSE()
+	set(LIB_PATH_SUFFIXES lib/x86 lib)
+ENDIF()
+
+# Search DEVIL_PATH and special paths
+FIND_PATH(
+  IL_INCLUDE_DIRS
   NAMES IL/il.h
-  HINTS
+  PATHS ${DEVIL_SEARCH_PATHS}
   PATH_SUFFIXES include
-  PATHS ${DEVIL_SEARCH_PATHS}
+  NO_DEFAULT_PATH
 )
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(PATH_SUFFIXES lib64 lib/x64 lib/amd64 lib)
-else()
-	set(PATH_SUFFIXES lib/x86 lib)
-endif()
-
-find_library(
-  DEVIL_LIBRARY_IL
+FIND_LIBRARY(
+  IL_LIBRARIES
   NAMES IL
-  HINTS
-  PATH_SUFFIXES ${PATH_SUFFIXES}
   PATHS ${DEVIL_SEARCH_PATHS}
+  PATH_SUFFIXES ${LIB_PATH_SUFFIXES}
+  NO_DEFAULT_PATH
 )
-
-find_library(
-  DEVIL_LIBRARY_ILU
+FIND_LIBRARY(
+  ILU_LIBRARIES
   NAMES ILU
-  HINTS
-  PATH_SUFFIXES ${PATH_SUFFIXES}
   PATHS ${DEVIL_SEARCH_PATHS}
+  PATH_SUFFIXES ${LIB_PATH_SUFFIXES}
+  NO_DEFAULT_PATH
+)
+FIND_LIBRARY(
+  ILUT_LIBRARIES
+  NAMES ILUT
+  PATHS ${DEVIL_SEARCH_PATHS}
+  PATH_SUFFIXES ${LIB_PATH_SUFFIXES}
+  NO_DEFAULT_PATH
 )
 
-SET(DEVIL_LIBRARIES ${DEVIL_LIBRARY_IL} ${DEVIL_LIBRARY_ILU})
+# Search pkg-config
+FIND_PACKAGE(PkgConfig)
+PKG_CHECK_MODULES(PC_IL QUIET IL)
+PKG_CHECK_MODULES(PC_ILU QUIET ILU)
+PKG_CHECK_MODULES(PC_ILUT QUIET ILUT)
+
+# Search CMake standard paths
+FIND_PATH(
+  IL_INCLUDE_DIRS
+  NAMES IL/il.h
+)
+FIND_LIBRARY(
+  IL_LIBRARIES
+  NAMES IL
+)
+FIND_LIBRARY(
+  ILU_LIBRARIES
+  NAMES ILU
+)
+FIND_LIBRARY(
+  ILUT_LIBRARIES
+  NAMES ILUT
+)
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(
-  DevIL
+  DEVIL
   REQUIRED_VARS
-  DEVIL_INCLUDE_DIR
-  DEVIL_LIBRARIES
-  DEVIL_LIBRARY_IL
-  DEVIL_LIBRARY_ILU
+  IL_INCLUDE_DIRS
+  IL_LIBRARIES
+  ILU_LIBRARIES
 )

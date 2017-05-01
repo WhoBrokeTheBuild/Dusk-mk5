@@ -45,17 +45,17 @@ void dusk_camera_set_aspect(dusk_camera_t * this, float width, float height);
 void dusk_camera_set_clip(dusk_camera_t * this, float vnear, float vfar);
 void dusk_camera_set_fov(dusk_camera_t * this, float fov);
 
-void dusk_camera_set_pos(dusk_camera_t * this, vec3f_t pos);
-void dusk_camera_get_pos(dusk_camera_t * this, vec3f_t out_pos);
+void dusk_camera_set_pos(dusk_camera_t * this, const vec3f_t pos);
+vec3f_t dusk_camera_get_pos(dusk_camera_t * this);
 
-void dusk_camera_set_dir(dusk_camera_t * this, vec3f_t dir);
-void dusk_camera_get_dir(dusk_camera_t * this, vec3f_t out_dir);
+void dusk_camera_set_dir(dusk_camera_t * this, const vec3f_t dir);
+vec3f_t dusk_camera_get_dir(dusk_camera_t * this);
 
-void dusk_camera_set_up(dusk_camera_t * this, vec3f_t up);
-void dusk_camera_get_up(dusk_camera_t * this, vec3f_t out_up);
+void dusk_camera_set_up(dusk_camera_t * this, const vec3f_t up);
+vec3f_t dusk_camera_get_up(dusk_camera_t * this);
 
-void dusk_camera_set_look_at(dusk_camera_t * this, vec3f_t look_at);
-void dusk_camera_get_look_at(dusk_camera_t * this, vec3f_t out_look_at);
+void dusk_camera_set_look_at(dusk_camera_t * this, const vec3f_t look_at);
+vec3f_t dusk_camera_get_look_at(dusk_camera_t * this);
 
 void dusk_camera_move(dusk_camera_t * this, dusk_camera_dir_t dir, float amount);
 
