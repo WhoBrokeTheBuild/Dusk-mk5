@@ -52,14 +52,14 @@ int main(int argc, char ** argv)
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
   printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
-  dusk_camera_set_up(dusk_camera, (vec3f_t){0.0f, 1.0f, 0.0f});
-  dusk_camera_set_pos(dusk_camera, (vec3f_t){2.0f, 2.0f, 2.0f});
-  dusk_camera_set_look_at(dusk_camera, (vec3f_t){0.0f, 0.0f, 0.0f});
+  dusk_camera_set_up(dusk_camera, (vec3f_t){{0.0f, 1.0f, 0.0f}});
+  dusk_camera_set_pos(dusk_camera, (vec3f_t){{2.0f, 2.0f, 2.0f}});
+  dusk_camera_set_look_at(dusk_camera, (vec3f_t){{0.0f, 0.0f, 0.0f}});
 
   dusk_camera_update(dusk_camera);
 
   vec3f_t cam_pos = dusk_camera_get_pos(dusk_camera);
-  vec3f_copy(&textured_data.light_pos, &(vec3f_t){5.0f, 5.0f, 5.0f});
+  vec3f_copy(&textured_data.light_pos, &(vec3f_t){{5.0f, 5.0f, 5.0f}});
   vec3f_copy(&textured_data.camera_pos, &cam_pos);
 
   dusk_shader_file_t textured_files[] = {
