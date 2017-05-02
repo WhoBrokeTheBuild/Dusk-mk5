@@ -28,7 +28,7 @@ void update(dusk_frame_info_t * finfo)
   ts.tv_sec  = 0;
   ts.tv_nsec = 10000;
   nanosleep(&ts, NULL);
-#endif 
+#endif
 }
 
 int main(int argc, char ** argv)

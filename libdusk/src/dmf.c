@@ -6,7 +6,8 @@
 
 dmf_Model_table_t dusk_load_dmf(const char * filename, unsigned char ** buffer)
 {
-  enum {
+  enum
+  {
     CHUNK_SIZE  = 131072, // 128K
     FILEID_SIZE = 4,
   };

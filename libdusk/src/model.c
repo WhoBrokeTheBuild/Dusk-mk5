@@ -102,9 +102,9 @@ void _dusk_model_update_mat(dusk_model_t * this)
 
   mat4x4_scale(&this->_mat, &this->_scale);
 
-  mat4x4_rotate(&this->_mat, this->_rot.z, &(vec3f_t){1.0f, 0.0f, 0.0f});
-  mat4x4_rotate(&this->_mat, this->_rot.y, &(vec3f_t){0.0f, 1.0f, 0.0f});
-  mat4x4_rotate(&this->_mat, this->_rot.z, &(vec3f_t){0.0f, 0.0f, 1.0f});
+  mat4x4_rotate(&this->_mat, this->_rot.z, &(vec3f_t){{1.0f, 0.0f, 0.0f}});
+  mat4x4_rotate(&this->_mat, this->_rot.y, &(vec3f_t){{0.0f, 1.0f, 0.0f}});
+  mat4x4_rotate(&this->_mat, this->_rot.z, &(vec3f_t){{0.0f, 0.0f, 1.0f}});
 
   mat4x4_translate(&this->_mat, &this->_pos);
 
@@ -179,9 +179,9 @@ dusk_model_t * dusk_load_model_from_file(const char * filename, dusk_shader_t * 
       const char *       dmf_specular_map = dmf_Material_specular_map(mat);
       const char *       dmf_bump_map     = dmf_Material_bump_map(mat);
 
-      vec4f_t ambient  = {0.0f, 0.0f, 0.0f, 1.0f};
-      vec4f_t diffuse  = {0.0f, 0.0f, 0.0f, 1.0f};
-      vec4f_t specular = {0.0f, 0.0f, 0.0f, 1.0f};
+      vec4f_t ambient  = {{0.0f, 0.0f, 0.0f, 1.0f}};
+      vec4f_t diffuse  = {{0.0f, 0.0f, 0.0f, 1.0f}};
+      vec4f_t specular = {{0.0f, 0.0f, 0.0f, 1.0f}};
       vec3f_copy((vec3f_t *)&ambient, (vec3f_t *)dmf_ambient);
       vec3f_copy((vec3f_t *)&diffuse, (vec3f_t *)dmf_diffuse);
       vec3f_copy((vec3f_t *)&specular, (vec3f_t *)dmf_specular);

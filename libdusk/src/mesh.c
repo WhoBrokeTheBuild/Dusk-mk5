@@ -83,9 +83,9 @@ void _dusk_mesh_update_shader_data(dusk_mesh_t * this)
 
   if (NULL == this->_material)
   {
-    vec4f_copy(&data->ambient, &(vec4f_t){0.2, 0.2, 0.2, 1.0});
-    vec4f_copy(&data->diffuse, &(vec4f_t){0.2, 0.2, 0.2, 1.0});
-    vec4f_copy(&data->specular, &(vec4f_t){0.0, 0.0, 0.0, 1.0});
+    vec4f_copy(&data->ambient, &(vec4f_t){{0.2, 0.2, 0.2, 1.0}});
+    vec4f_copy(&data->diffuse, &(vec4f_t){{0.2, 0.2, 0.2, 1.0}});
+    vec4f_copy(&data->specular, &(vec4f_t){{0.0, 0.0, 0.0, 1.0}});
 
     data->shininess = 32;
     data->dissolve  = 0;

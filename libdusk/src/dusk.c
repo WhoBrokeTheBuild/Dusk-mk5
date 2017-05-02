@@ -159,9 +159,9 @@ bool dusk_init(int argc, char ** argv, dusk_settings_t * settings)
   dusk_camera_set_clip(dusk_camera, 0.001f, 10000.0f);
   dusk_camera_set_fov(dusk_camera, GLMM_RAD(45.0f));
 
-  dusk_camera_set_up(dusk_camera, (vec3f_t){0.0f, 1.0f, 0.0f});
-  dusk_camera_set_pos(dusk_camera, (vec3f_t){5.0f, 5.0f, 5.0f});
-  dusk_camera_set_look_at(dusk_camera, (vec3f_t){0.0f, 0.0f, 0.0f});
+  dusk_camera_set_up(dusk_camera, (vec3f_t){{0.0f, 1.0f, 0.0f}});
+  dusk_camera_set_pos(dusk_camera, (vec3f_t){{5.0f, 5.0f, 5.0f}});
+  dusk_camera_set_look_at(dusk_camera, (vec3f_t){{0.0f, 0.0f, 0.0f}});
 
   dusk_camera_update(dusk_camera);
 
