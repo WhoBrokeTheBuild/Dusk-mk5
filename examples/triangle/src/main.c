@@ -32,8 +32,8 @@ int main(int argc, char ** argv)
   };
 
   dusk_shader_file_t triangle_files[] = {
-      {GL_VERTEX_SHADER, "assets/triangle.vs"},
-      {GL_FRAGMENT_SHADER, "assets/triangle.fs"},
+      {GL_VERTEX_SHADER, "assets/triangle.vs.glsl"},
+      {GL_FRAGMENT_SHADER, "assets/triangle.fs.glsl"},
       {0, NULL},
   };
 

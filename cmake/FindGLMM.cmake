@@ -18,7 +18,7 @@ FIND_PATH(
 )
 
 # Search pkg-config
-FIND_PACKAGE(PkgConfig)
+FIND_PACKAGE(PkgConfig QUIET)
 PKG_CHECK_MODULES(GLMM QUIET glmm)
 
 # Search CMake standard paths

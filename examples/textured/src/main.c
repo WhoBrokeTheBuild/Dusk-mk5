@@ -63,8 +63,8 @@ int main(int argc, char ** argv)
   vec3f_copy(&textured_data.camera_pos, &cam_pos);
 
   dusk_shader_file_t textured_files[] = {
-      {GL_VERTEX_SHADER, "assets/textured.vs"},
-      {GL_FRAGMENT_SHADER, "assets/textured.fs"},
+      {GL_VERTEX_SHADER, "assets/textured.vs.glsl"},
+      {GL_FRAGMENT_SHADER, "assets/textured.fs.glsl"},
       {0, NULL},
   };
 

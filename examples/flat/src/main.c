@@ -74,7 +74,7 @@ int main(int argc, char ** argv)
   vec4f_copy(&flat_data.color, &COLORS[color_index]);
 
   dusk_shader_file_t flat_files[] = {
-      {GL_VERTEX_SHADER, "assets/flat.vs"}, {GL_FRAGMENT_SHADER, "assets/flat.fs"}, {0, NULL},
+      {GL_VERTEX_SHADER, "assets/flat.vs.glsl"}, {GL_FRAGMENT_SHADER, "assets/flat.fs.glsl"}, {0, NULL},
   };
 
   dusk_shader_init(&flat_shader, flat_files);

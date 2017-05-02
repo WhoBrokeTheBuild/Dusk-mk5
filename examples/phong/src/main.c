@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
   vec3f_copy(&phong_data.camera_pos, &cam_pos);
 
   dusk_shader_file_t phong_files[] = {
-      {GL_VERTEX_SHADER, "assets/phong.vs"}, {GL_FRAGMENT_SHADER, "assets/phong.fs"}, {0, NULL},
+      {GL_VERTEX_SHADER, "assets/phong.vs.glsl"}, {GL_FRAGMENT_SHADER, "assets/phong.fs.glsl"}, {0, NULL},
   };
 
   dusk_shader_init(&phong_shader, phong_files);

@@ -67,9 +67,9 @@ cd "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x64"
 cmake -G "Visual Studio 14 2015 Win64" ..\.. | Out-Null
 cmake --build . --target --config Release | Out-Null
 Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\zlib.h" "$($VC_DIR)\include\" -Recurse -Force
-Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x86\zconf.h" "$($VC_DIR)\include\" -Recurse -Force
-Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x86\Release\*.lib" "$($VC_DIR)\lib\amd64\" -Recurse -Force
-Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x86\Release\*.dll" "$($VC_DIR)\bin\amd64\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x64\zconf.h" "$($VC_DIR)\include\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x64\Release\*.lib" "$($VC_DIR)\lib\amd64\" -Recurse -Force
+Copy-Item "$($TEMP_DIR)\zlib-$($ZLIB_VERSION)\build\x64\Release\*.dll" "$($VC_DIR)\bin\amd64\" -Recurse -Force
 
 Write-Host "Downloading DevIL v$($DEVIL_VERSION)"
 # Hardcoded Sourceforge Mirror, might break in the future

@@ -2,6 +2,6 @@
 DUSK_EXAMPLE(
   flat
   src/main.c
-  assets/flat.fs
-  assets/flat.vs
+  assets/flat.fs.glsl
+  assets/flat.vs.glsl
 )

@@ -6,7 +6,7 @@ FIND_PACKAGE(GLMM   REQUIRED)
 SET(Dusk_OUT dusk)
 
 SET(
-  Dusk_SRCS
+  Dusk_INCLUDES
   ${PROJECT_SOURCE_DIR}/include/dusk/dusk.h
   ${PROJECT_SOURCE_DIR}/include/dusk/timer.h
   ${PROJECT_SOURCE_DIR}/include/dusk/camera.h
@@ -17,12 +17,18 @@ SET(
   ${PROJECT_SOURCE_DIR}/include/dusk/texture.h
   ${PROJECT_SOURCE_DIR}/include/dusk/resource.h
   ${PROJECT_SOURCE_DIR}/include/dusk/dmf.h
+)
 
+SET(
+  Dusk_GENERATED
   ${PROJECT_BINARY_DIR}/include/dusk/config.h
   ${PROJECT_BINARY_DIR}/include/dusk/flatbuffers_common_reader.h
   ${PROJECT_BINARY_DIR}/include/dusk/dmf_reader.h
   ${PROJECT_BINARY_DIR}/include/dusk/dmf_verifier.h
+)
 
+SET(
+  Dusk_SRCS
   ${PROJECT_SOURCE_DIR}/src/dusk.c
   ${PROJECT_SOURCE_DIR}/src/timer.c
   ${PROJECT_SOURCE_DIR}/src/debug.h
@@ -73,6 +79,8 @@ ENDIF()
 
 ADD_LIBRARY(
   ${Dusk_OUT}
+  ${Dusk_INCLUDES}
+  ${Dusk_GENERATED}
   ${Dusk_SRCS}
   ${Dusk_FCC_OUTPUTS}
   ${PROJECT_BINARY_DIR}/include/dusk/config.h
@@ -86,12 +94,14 @@ SET(
   FORCE
 )
 
-SOURCE_GROUP("Sources" FILES ${Dusk_SRCS})
+SOURCE_GROUP("include" FILES ${Dusk_INCLUDES} ${Dusk_GENERATED})
+SOURCE_GROUP("src" FILES ${Dusk_SRCS})
+SOURCE_GROUP("flatbuffers" FILES ${Dusk_FBS})
 
 IF(UNIX)
   ADD_CUSTOM_TARGET(
     format-dusk
-    COMMAND clang-format -i ${Dusk_SRCS}
+    COMMAND clang-format -i ${Dusk_INCLUDES} ${Dusk_SRCS}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   )
 ENDIF()

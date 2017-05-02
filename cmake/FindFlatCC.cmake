@@ -27,60 +27,23 @@
 #   for the given flatbuffer schema files.
 #   Returns the header files in ${Name}_OUTPUTS
 
-set(FLATCC_SEARCH_PATHS
-	~/Library/Frameworks
-	/Library/Frameworks
-	/usr/local
-	/usr
-	/sw # Fink
-	/opt/local # DarwinPorts
-	/opt/csw # Blastwave
-	/opt
-	$ENV{VS140COMNTOOLS}../../VC # VS 2015
-	$ENV{VS120COMNTOOLS}../../VC # VS 2013
-	$ENV{VS110COMNTOOLS}../../VC # VS 2012
-	$ENV{VS100COMNTOOLS}../../VC # VS 2010
-)
-
 set(FLATCC_CMAKE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 find_path(FLATCC_INCLUDE_DIR
 	NAMES flatcc/flatcc.h
 	HINTS
 	PATH_SUFFIXES include
-	PATHS ${FLATCC_SEARCH_PATHS}
 )
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(PATH_SUFFIXES lib64 lib/x64 lib/amd64 lib)
-else()
-	set(PATH_SUFFIXES lib/x86 lib)
-endif()
 
 find_library(FLATCC_LIBRARY
 	NAMES flatcc
-	HINTS
-	PATH_SUFFIXES ${PATH_SUFFIXES}
-	PATHS ${FLATCC_SEARCH_PATHS}
 )
 find_library(FLATCC_RUNTIME_LIBRARY
 	NAMES flatccrt
-	HINTS
-	PATH_SUFFIXES ${PATH_SUFFIXES}
-	PATHS ${FLATCC_SEARCH_PATHS}
 )
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(PATH_SUFFIXES bin/amd64 bin)
-else()
-	set(PATH_SUFFIXES bin)
-endif()
 
 find_program(FLATCC_EXECUTABLE
 	NAMES flatcc
-	HINTS
-	PATH_SUFFIXES ${PATH_SUFFIXES}
-	PATHS ${FLATCC_SEARCH_PATHS}
 )
 
 include(FindPackageHandleStandardArgs)

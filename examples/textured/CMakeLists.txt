@@ -2,6 +2,6 @@
 DUSK_EXAMPLE(
   textured
   src/main.c
-  assets/textured.fs
-  assets/textured.vs
+  assets/textured.fs.glsl
+  assets/textured.vs.glsl
 )
