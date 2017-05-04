@@ -33,7 +33,8 @@ void main()
   normal   = in_normal;
   texcoord = in_texcoord;
 
-  position.y = sin(wave_data.width * position.x + wave_data.time) * cos(wave_data.width * position.z + wave_data.time) * wave_data.height;
+  position.y = sin(wave_data.width * position.x + wave_data.time) * cos(wave_data.width * position.z + wave_data.time) * wave_data.height / 3.0;
+  position.y += sin(wave_data.width * position.x / 2 + wave_data.time / 10) * wave_data.height / 2;
   wave_height = ((position.y + wave_data.height) / (2.0 * wave_data.height));
 
   gl_Position = model_data.mvp * vec4(position, 1.0);

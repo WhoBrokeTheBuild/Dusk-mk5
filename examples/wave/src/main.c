@@ -16,7 +16,7 @@ dusk_model_t * plane;
 
 void update(dusk_frame_info_t * finfo)
 {
-  wave_data.time += finfo->elapsed_time / 1000.0f;
+  wave_data.time += finfo->elapsed_time / 300.0f;
 
   dusk_shader_set_data(&wave_shader, wave_data_index, (void *)&wave_data);
 }
@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
   printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
-  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   dusk_camera_set_up(dusk_camera, (vec3f_t){{0.0f, 1.0f, 0.0f}});
   dusk_camera_set_pos(dusk_camera, (vec3f_t){{130.0f, 30.0f, 130.0f}});
@@ -57,8 +57,8 @@ int main(int argc, char ** argv)
   };
 
   wave_data.time = 0;
-  wave_data.height = 2.0f;
-  wave_data.width = 0.2f;
+  wave_data.height = 1.3f;
+  wave_data.width = 0.4f;
 
   dusk_shader_init(&wave_shader, wave_files);
   wave_data_index =
