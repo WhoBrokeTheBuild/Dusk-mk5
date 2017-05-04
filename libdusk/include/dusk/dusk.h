@@ -1,8 +1,8 @@
 #ifndef DUSK_H
 #define DUSK_H
 
-#include <dusk/config.h>
 #include <dusk/camera.h>
+#include <dusk/config.h>
 #include <dusk/dmf.h>
 #include <dusk/mesh.h>
 #include <dusk/model.h>

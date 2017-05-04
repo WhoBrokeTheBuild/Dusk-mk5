@@ -94,32 +94,69 @@ void dusk_mesh_create_plane(dusk_mesh_t * this,
   float square_width  = width / (float)cols;
   float square_height = height / (float)rows;
 
-  vec3f_t * verts = malloc(sizeof(float) * this->count);
-  vec3f_t * norms = malloc(sizeof(float) * this->count);
-  vec2f_t * txcds = malloc(sizeof(float) * this->count);
+  vec3f_t * tmpverts = malloc(sizeof(vec3f_t) * (rows * cols));
+  vec3f_t * tmpnorms = malloc(sizeof(vec3f_t) * (rows * cols));
+  vec2f_t * tmptxcds = malloc(sizeof(vec2f_t) * (rows * cols));
 
-  unsigned int ind = 0;
-  for (int row = 0; row < rows - 1; ++row)
+  vec3f_t * verts = malloc(sizeof(vec3f_t) * this->count);
+  vec3f_t * norms = malloc(sizeof(vec3f_t) * this->count);
+  vec2f_t * txcds = malloc(sizeof(vec3f_t) * this->count);
+
+  int i = 0;
+  for (int row = 0; row < rows; row++)
+  {
+    for (int col = 0; col < cols; col++)
+    {
+      tmpverts[i] = (vec3f_t){{(float)col * square_width, 0.0f, (float)row * square_height}};
+      tmpnorms[i] = (vec3f_t){{ 0.0f, 1.0f, 0.0f}};
+      tmptxcds[i] = (vec2f_t){{(float)col / (float)cols, (float)row / (float)rows}};
+      ++i;
+    }
+  }
+
+  i = 0;
+  for (int row = 0; row < rows - 1; row++)
   {
     if ((row & 1) == 0)
-    {
-      for (int col = 0; col < cols; ++col)
+    { // even rows
+      for (int col = 0; col < cols; col++)
       {
-        verts[ind] = (vec3f_t){{row * square_width, 0.0f, col * square_height}};
-        norms[ind] = (vec3f_t){{0.0f, 1.0f, 0.0f}};
-        txcds[ind] = (vec2f_t){{(float)row / (float)rows, (float)col / (float)cols}};
+        verts[i] = tmpverts[col + row * cols];
+        norms[i] = tmpnorms[col + row * cols];
+        txcds[i] = tmptxcds[col + row * cols];
+        ++i;
+        verts[i] = tmpverts[col + (row + 1) * cols];
+        norms[i] = tmpnorms[col + (row + 1) * cols];
+        txcds[i] = tmptxcds[col + (row + 1) * cols];
+        ++i;
       }
     }
     else
-    {
-      for (int col = cols - 1; col > 0; --col)
+    { // odd rows
+      for (int col = cols - 1; col > 0; col--)
       {
-        verts[ind] = (vec3f_t){{row * square_width, 0.0f, col * square_height}};
-        norms[ind] = (vec3f_t){{0.0f, 1.0f, 0.0f}};
-        txcds[ind] = (vec2f_t){{(float)row / (float)rows, (float)col / (float)cols}};
+        verts[i] = tmpverts[col + (row + 1) * cols];
+        norms[i] = tmpnorms[col + (row + 1) * cols];
+        txcds[i] = tmptxcds[col + (row + 1) * cols];
+        ++i;
+        verts[i] = tmpverts[col - 1 + row * cols];
+        norms[i] = tmpnorms[col - 1 + row * cols];
+        txcds[i] = tmptxcds[col - 1 + row * cols];
+        ++i;
       }
     }
   }
+  if ((rows & 1) && rows > 2)
+  {
+    verts[i] = tmpverts[(rows - 1) * cols];
+    norms[i] = tmpnorms[(rows - 1) * cols];
+    txcds[i] = tmptxcds[(rows - 1) * cols];
+    ++i;
+  }
+
+  free(tmpverts);
+  free(tmpnorms);
+  free(tmptxcds);
 
   glGenVertexArrays(1, &this->_vao);
   glBindVertexArray(this->_vao);

@@ -4,6 +4,8 @@
 typedef struct
 {
   float time;
+  float height;
+  float width;
 } wave_data_t;
 
 int           wave_data_index;
@@ -14,7 +16,9 @@ dusk_model_t * plane;
 
 void update(dusk_frame_info_t * finfo)
 {
-  wave_data.time += finfo->elapsed_time;
+  wave_data.time += finfo->elapsed_time / 1000.0f;
+
+  dusk_shader_set_data(&wave_shader, wave_data_index, (void *)&wave_data);
 }
 
 int main(int argc, char ** argv)
@@ -38,17 +42,23 @@ int main(int argc, char ** argv)
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
   printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   dusk_camera_set_up(dusk_camera, (vec3f_t){{0.0f, 1.0f, 0.0f}});
-  dusk_camera_set_pos(dusk_camera, (vec3f_t){{15.0f, 15.0f, 15.0f}});
-  dusk_camera_set_look_at(dusk_camera, (vec3f_t){{5.0f, 0.0f, 5.0f}});
+  dusk_camera_set_pos(dusk_camera, (vec3f_t){{130.0f, 30.0f, 130.0f}});
+  dusk_camera_set_look_at(dusk_camera, (vec3f_t){{50.0f, 0.0f, 50.0f}});
+
+  dusk_camera_update(dusk_camera);
 
   dusk_shader_file_t wave_files[] = {
       {GL_VERTEX_SHADER, "assets/wave.vs.glsl"},
       {GL_FRAGMENT_SHADER, "assets/wave.fs.glsl"},
       {0, NULL},
   };
+
+  wave_data.time = 0;
+  wave_data.height = 2.0f;
+  wave_data.width = 0.2f;
 
   dusk_shader_init(&wave_shader, wave_files);
   wave_data_index =
@@ -62,7 +72,7 @@ int main(int argc, char ** argv)
 
   dusk_mesh_t * plane_mesh = (dusk_mesh_t *)malloc(sizeof(dusk_mesh_t));
   dusk_track_resource(DUSK_RSC_MESH, (void *)plane_mesh);
-  dusk_mesh_create_plane(plane_mesh, plane_material, &wave_shader, 100, 100, 10.0f, 10.0f);
+  dusk_mesh_create_plane(plane_mesh, plane_material, &wave_shader, 100, 100, 100.0f, 100.0f);
 
   plane = (dusk_model_t *)malloc(sizeof(dusk_model_t));
   dusk_model_init(plane, 1, &plane_mesh, &wave_shader);
