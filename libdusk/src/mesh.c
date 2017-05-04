@@ -7,18 +7,19 @@ void _dusk_mesh_update_shader_data(dusk_mesh_t * this);
 
 void dusk_mesh_init(dusk_mesh_t * this,
                     dusk_material_t * material,
+                    dusk_shader_t *   shader,
                     unsigned int      count,
                     const float *     verts,
                     const float *     norms,
-                    const float *     txcds,
-                    dusk_shader_t *   shader)
+                    const float *     txcds)
 {
-  this->_material = material;
-  this->_shader   = shader;
-  this->count     = count;
+  this->count      = count;
+  this->_material  = material;
+  this->_shader    = shader;
+  this->_draw_mode = GL_TRIANGLES;
 
-  glGenVertexArrays(1, &this->vao);
-  glBindVertexArray(this->vao);
+  glGenVertexArrays(1, &this->_vao);
+  glBindVertexArray(this->_vao);
 
   GLuint vbos[3];
   glGenBuffers(3, vbos);
@@ -54,7 +55,7 @@ void dusk_mesh_init(dusk_mesh_t * this,
 
 void dusk_mesh_term(dusk_mesh_t * this)
 {
-  glDeleteVertexArrays(1, &this->vao);
+  glDeleteVertexArrays(1, &this->_vao);
   dusk_free_resource(this->_material);
 }
 
@@ -73,8 +74,84 @@ void dusk_mesh_render(dusk_mesh_t * this)
     dusk_material_bind(this->_material);
   }
 
-  glBindVertexArray(this->vao);
-  glDrawArrays(GL_TRIANGLES, 0, this->count);
+  glBindVertexArray(this->_vao);
+  glDrawArrays(this->_draw_mode, 0, this->count);
+}
+
+void dusk_mesh_create_plane(dusk_mesh_t * this,
+                            dusk_material_t * material,
+                            dusk_shader_t *   shader,
+                            int               rows,
+                            int               cols,
+                            float             width,
+                            float             height)
+{
+  this->_material  = material;
+  this->_shader    = shader;
+  this->_draw_mode = GL_TRIANGLE_STRIP;
+  this->count      = (rows * cols) + (rows - 1) * (cols - 2);
+
+  float square_width  = width / (float)cols;
+  float square_height = height / (float)rows;
+
+  vec3f_t * verts = malloc(sizeof(float) * this->count);
+  vec3f_t * norms = malloc(sizeof(float) * this->count);
+  vec2f_t * txcds = malloc(sizeof(float) * this->count);
+
+  unsigned int ind = 0;
+  for (int row = 0; row < rows - 1; ++row)
+  {
+    if ((row & 1) == 0)
+    {
+      for (int col = 0; col < cols; ++col)
+      {
+        verts[ind] = (vec3f_t){{row * square_width, 0.0f, col * square_height}};
+        norms[ind] = (vec3f_t){{0.0f, 1.0f, 0.0f}};
+        txcds[ind] = (vec2f_t){{(float)row / (float)rows, (float)col / (float)cols}};
+      }
+    }
+    else
+    {
+      for (int col = cols - 1; col > 0; --col)
+      {
+        verts[ind] = (vec3f_t){{row * square_width, 0.0f, col * square_height}};
+        norms[ind] = (vec3f_t){{0.0f, 1.0f, 0.0f}};
+        txcds[ind] = (vec2f_t){{(float)row / (float)rows, (float)col / (float)cols}};
+      }
+    }
+  }
+
+  glGenVertexArrays(1, &this->_vao);
+  glBindVertexArray(this->_vao);
+
+  GLuint vbos[3];
+  glGenBuffers(3, vbos);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->count * 3, verts, GL_STATIC_DRAW);
+  glVertexAttribPointer(DUSK_ATTRID_VERTS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(DUSK_ATTRID_VERTS);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbos[1]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->count * 3, norms, GL_STATIC_DRAW);
+  glVertexAttribPointer(DUSK_ATTRID_NORMS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(DUSK_ATTRID_NORMS);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbos[2]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->count * 2, txcds, GL_STATIC_DRAW);
+  glVertexAttribPointer(DUSK_ATTRID_TXCDS, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(DUSK_ATTRID_TXCDS);
+
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  free(verts);
+  free(norms);
+  free(txcds);
+
+  _dusk_mesh_update_shader_data(this);
+  this->_shader_data_id = dusk_shader_add_data(this->_shader, "MeshData", &this->_shader_data,
+                                               sizeof(dusk_mesh_data_t));
 }
 
 void _dusk_mesh_update_shader_data(dusk_mesh_t * this)

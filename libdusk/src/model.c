@@ -239,7 +239,7 @@ dusk_model_t * dusk_load_model_from_file(const char * filename, dusk_shader_t * 
       txcds = (float *)dmf_txcds;
     }
 
-    dusk_mesh_init(mesh, material, count, verts, norms, txcds, shader);
+    dusk_mesh_init(mesh, material, shader, count, verts, norms, txcds);
     meshes[i] = mesh;
   }
 

@@ -29,11 +29,6 @@ dusk_settings_t   g_settings;
 
 static long g_frames = 0;
 
-const char * dusk_version()
-{
-  return DUSK_VERSION_STRING;
-}
-
 void _dusk_display_cb()
 {
   ++g_frames;

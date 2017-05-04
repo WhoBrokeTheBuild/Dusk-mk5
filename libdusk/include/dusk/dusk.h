@@ -1,8 +1,8 @@
 #ifndef DUSK_H
 #define DUSK_H
 
-#include <dusk/camera.h>
 #include <dusk/config.h>
+#include <dusk/camera.h>
 #include <dusk/dmf.h>
 #include <dusk/mesh.h>
 #include <dusk/model.h>
@@ -33,8 +33,6 @@ typedef struct dusk_settings
   void (*render_func)();
 
 } dusk_settings_t;
-
-const char * dusk_version();
 
 bool dusk_init(int argc, char ** argv, dusk_settings_t * settings);
 

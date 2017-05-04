@@ -1,6 +1,8 @@
 #ifndef DUSK_RESOURCE_H
 #define DUSK_RESOURCE_H
 
+#include <dusk/config.h>
+
 typedef enum dusk_resource_type {
   DUSK_RSC_INVALID = -1,
 

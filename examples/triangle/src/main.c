@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
   int glut_min = ((glut_ver - glut_pat) % 10000) / 100;
   int glut_maj = glut_ver / 10000;
 
-  printf("Dusk Version: %s\n", dusk_version());
+  printf("Dusk Version: %s\n", DUSK_VERSION);
   printf("GLMM Version: %s\n", GLMM_VER_STRING);
   printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
   printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
@@ -51,7 +51,7 @@ int main(int argc, char ** argv)
   // clang-format on
 
   dusk_mesh_t triangle_mesh;
-  dusk_mesh_init(&triangle_mesh, NULL, 3, verts, NULL, NULL, &triangle_shader);
+  dusk_mesh_init(&triangle_mesh, NULL, &triangle_shader, 3, verts, NULL, NULL);
 
   dusk_model_t  triangle;
   dusk_mesh_t * meshes = {&triangle_mesh};

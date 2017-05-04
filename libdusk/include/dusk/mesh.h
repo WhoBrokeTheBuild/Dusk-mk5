@@ -27,8 +27,11 @@ typedef struct dusk_mesh_data
 
 typedef struct dusk_mesh
 {
-  unsigned int      count;
-  GLuint            vao;
+  unsigned int count;
+
+  GLenum _draw_mode;
+  GLuint _vao;
+
   dusk_material_t * _material;
   dusk_shader_t *   _shader;
 
@@ -41,14 +44,22 @@ typedef struct dusk_mesh
 
 void dusk_mesh_init(dusk_mesh_t * this,
                     dusk_material_t * material,
+                    dusk_shader_t *   shader,
                     unsigned int      count,
                     const float *     verts,
                     const float *     norms,
-                    const float *     txcds,
-                    dusk_shader_t *   shader);
+                    const float *     txcds);
 
 void dusk_mesh_term(dusk_mesh_t * this);
 
 void dusk_mesh_render(dusk_mesh_t * this);
+
+void dusk_mesh_create_plane(dusk_mesh_t * this,
+                            dusk_material_t * material,
+                            dusk_shader_t *   shader,
+                            int               rows,
+                            int               cols,
+                            float             width,
+                            float             height);
 
 #endif // DUSK_MESH_H
