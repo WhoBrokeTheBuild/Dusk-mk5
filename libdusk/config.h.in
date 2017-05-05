@@ -12,7 +12,6 @@
 #define DUSK_VERSION "@PROJECT_VERSION@"
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
 
 #define DUSK_MAX_PATH 1024
 

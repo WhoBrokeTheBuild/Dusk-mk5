@@ -22,16 +22,20 @@ void dusk_model_init(dusk_model_t * this,
   vec3f_init(&this->_rot, 0.0f);
   vec3f_init(&this->_scale, 1.0f);
 
-  glUseProgram(shader->program);
-  glUniform1i(glGetUniformLocation(shader->program, "ambient_map"), DUSK_MATERIAL_AMBIENT_TEXID);
-  glUniform1i(glGetUniformLocation(shader->program, "diffuse_map"), DUSK_MATERIAL_DIFFUSE_TEXID);
-  glUniform1i(glGetUniformLocation(shader->program, "specular_map"), DUSK_MATERIAL_SPECULAR_TEXID);
-  glUniform1i(glGetUniformLocation(shader->program, "bump_map"), DUSK_MATERIAL_BUMP_TEXID);
+  glUseProgram(this->_shader->program);
+  glUniform1i(glGetUniformLocation(this->_shader->program, "ambient_map"), DUSK_MATERIAL_AMBIENT_TEXID);
+  glUniform1i(glGetUniformLocation(this->_shader->program, "diffuse_map"), DUSK_MATERIAL_DIFFUSE_TEXID);
+  glUniform1i(glGetUniformLocation(this->_shader->program, "specular_map"), DUSK_MATERIAL_SPECULAR_TEXID);
+  glUniform1i(glGetUniformLocation(this->_shader->program, "bump_map"), DUSK_MATERIAL_BUMP_TEXID);
+  glUseProgram(0);
 
   _dusk_model_update_mat(this);
   _dusk_model_update_shader_data(this);
   this->_shader_data_id = dusk_shader_add_data(this->_shader, "ModelData", &this->_shader_data,
                                                sizeof(dusk_model_data_t));
+
+   DEBUG_INFO("ModelData ID %d", this->_shader_data_id);
+
 }
 
 void dusk_model_term(dusk_model_t * this)

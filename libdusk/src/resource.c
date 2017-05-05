@@ -1,5 +1,6 @@
 #include "dusk/resource.h"
 
+#include <stdlib.h>
 #include <dusk/camera.h>
 #include <dusk/material.h>
 #include <dusk/mesh.h>
@@ -74,6 +75,7 @@ void dusk_free_resource(void * data)
     {
       last->next = ptr->next;
 
+      dusk_resource_free_data(ptr);
       free(ptr);
       break;
     }
@@ -90,6 +92,7 @@ void dusk_free_all_resources()
   {
     tmp = ptr;
     ptr = ptr->next;
+    dusk_resource_free_data(ptr);
     free(ptr);
   }
 }

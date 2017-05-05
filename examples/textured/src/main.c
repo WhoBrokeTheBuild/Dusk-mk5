@@ -41,15 +41,13 @@ int main(int argc, char ** argv)
 
   dusk_init(argc, argv, &settings);
 
-  int glut_ver = glutGet(GLUT_VERSION);
-  int glut_pat = glut_ver % 100;
-  int glut_min = ((glut_ver - glut_pat) % 10000) / 100;
-  int glut_maj = glut_ver / 10000;
+  SDL_version sdlver;
+  SDL_GetVersion(&sdlver);
 
   printf("Dusk Version: %s\n", DUSK_VERSION);
   printf("GLMM Version: %s\n", GLMM_VER_STRING);
   printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
-  printf("(Free)GLUT Version: %d.%d.%d\n", glut_maj, glut_min, glut_pat);
+  printf("SDL Version: %d.%d.%d\n", sdlver.major, sdlver.minor, sdlver.patch);
   printf("GLEW Version: %d.%d.%d\n", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
   dusk_camera_set_up(dusk_camera, (vec3f_t){{0.0f, 1.0f, 0.0f}});

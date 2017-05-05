@@ -1,6 +1,7 @@
 #include "dusk/shader.h"
 
 #include "debug.h"
+#include <stdlib.h>
 #include <dusk/camera.h>
 
 #define _MAX_SHADER_COUNT 100
@@ -112,7 +113,9 @@ int dusk_shader_add_data(dusk_shader_t * this, const char * name, void * data, s
   for (ptr = _data_root; NULL != ptr; ptr = ptr->_next)
   {
     if (0 == strcmp(ptr->_name, name))
+    {
       break;
+    }
 
     next = &ptr->_next;
     ++index;
@@ -136,6 +139,8 @@ int dusk_shader_add_data(dusk_shader_t * this, const char * name, void * data, s
     ptr->_ubo  = 0;
     ptr->_size = size;
 
+    glUseProgram(this->program);
+
     glGenBuffers(1, &ptr->_ubo);
     glBindBuffer(GL_UNIFORM_BUFFER, ptr->_ubo);
     glBufferData(GL_UNIFORM_BUFFER, ptr->_size, data, GL_DYNAMIC_DRAW);
@@ -145,13 +150,18 @@ int dusk_shader_add_data(dusk_shader_t * this, const char * name, void * data, s
     glUniformBlockBinding(this->program, data_index, _data_max_id);
     glBindBufferBase(GL_UNIFORM_BUFFER, _data_max_id, ptr->_ubo);
 
-    printf("Added Shader Data %s at index %d\n", name, _data_max_id);
+    DEBUG_INFO("Added Shader Data %s at index %d", name, _data_max_id);
 
     ++_data_max_id;
   }
   else
   {
+    GLuint data_index = glGetUniformBlockIndex(this->program, name);
+    glUniformBlockBinding(this->program, data_index, index);
+    glBindBufferBase(GL_UNIFORM_BUFFER, _data_max_id, ptr->_ubo);
+
     dusk_shader_set_data(this, index, data);
+    DEBUG_INFO("Updated Shader Data %s at index %d", ptr->_name, index);
   }
 
   return index;
@@ -171,6 +181,8 @@ void dusk_shader_set_data(dusk_shader_t * this, int index, void * data)
 
   if (NULL == ptr)
     return;
+
+  glUseProgram(this->program);
 
   glBindBuffer(GL_UNIFORM_BUFFER, ptr->_ubo);
   GLvoid * data_ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);

@@ -34,8 +34,8 @@ ENDIF()
 ### Set compiler-specific flags
 IF(CMAKE_COMPILER_IS_GNUCC OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
   SET(COMMON_FLAGS "-D_XOPEN_SOURCE=700 \
-                    -Wall -Wextra -pedantic -Werror \
-                    -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments")
+                    -Wall -Wextra -pedantic \
+                    -Wno-unused-parameter -Wno-gnu-zero-variadic-macro-arguments -Wno-missing-braces")
   SET(CMAKE_C_FLAGS   "-std=c11 ${COMMON_FLAGS} ${CMAKE_CXX_FLAGS}")
   SET(CMAKE_CXX_FLAGS "-std=c++11 ${COMMON_FLAGS} ${CMAKE_CXX_FLAGS}")
 ELSEIF(MSVC)

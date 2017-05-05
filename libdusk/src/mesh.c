@@ -51,6 +51,7 @@ void dusk_mesh_init(dusk_mesh_t * this,
   _dusk_mesh_update_shader_data(this);
   this->_shader_data_id = dusk_shader_add_data(this->_shader, "MeshData", &this->_shader_data,
                                                sizeof(dusk_mesh_data_t));
+  DEBUG_INFO("MeshData ID %d", this->_shader_data_id);
 }
 
 void dusk_mesh_term(dusk_mesh_t * this)
@@ -76,6 +77,7 @@ void dusk_mesh_render(dusk_mesh_t * this)
 
   glBindVertexArray(this->_vao);
   glDrawArrays(this->_draw_mode, 0, this->count);
+  glBindVertexArray(0);
 }
 
 void dusk_mesh_create_plane(dusk_mesh_t * this,
@@ -189,6 +191,7 @@ void dusk_mesh_create_plane(dusk_mesh_t * this,
   _dusk_mesh_update_shader_data(this);
   this->_shader_data_id = dusk_shader_add_data(this->_shader, "MeshData", &this->_shader_data,
                                                sizeof(dusk_mesh_data_t));
+  DEBUG_INFO("MeshData ID %d", this->_shader_data_id);
 }
 
 void _dusk_mesh_update_shader_data(dusk_mesh_t * this)
