@@ -11,17 +11,17 @@
 
 typedef struct dusk_material
 {
-  vec4f_t ambient;
-  vec4f_t diffuse;
-  vec4f_t specular;
+    vec4f_t ambient;
+    vec4f_t diffuse;
+    vec4f_t specular;
 
-  float shininess;
-  float dissolve;
+    float shininess;
+    float dissolve;
 
-  GLuint _ambient_map;
-  GLuint _diffuse_map;
-  GLuint _specular_map;
-  GLuint _bump_map;
+    GLuint _ambient_map;
+    GLuint _diffuse_map;
+    GLuint _specular_map;
+    GLuint _bump_map;
 
 } dusk_material_t;
 
@@ -40,22 +40,22 @@ void dusk_material_term(dusk_material_t * this);
 
 static inline bool dusk_material_has_ambient_map(dusk_material_t * this)
 {
-  return 0 != this->_ambient_map;
+    return 0 != this->_ambient_map;
 }
 
 static inline bool dusk_material_has_diffuse_map(dusk_material_t * this)
 {
-  return 0 != this->_diffuse_map;
+    return 0 != this->_diffuse_map;
 }
 
 static inline bool dusk_material_has_specular_map(dusk_material_t * this)
 {
-  return 0 != this->_specular_map;
+    return 0 != this->_specular_map;
 }
 
 static inline bool dusk_material_has_bump_map(dusk_material_t * this)
 {
-  return 0 != this->_bump_map;
+    return 0 != this->_bump_map;
 }
 
 void dusk_material_bind(dusk_material_t * this);

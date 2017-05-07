@@ -6,24 +6,24 @@
 
 typedef struct dusk_shader_file
 {
-  GLenum       type;
-  const char * filename;
+    GLenum       type;
+    const char * filename;
 
 } dusk_shader_file_t;
 
 typedef struct dusk_shader_data
 {
-  char * _name;
-  GLuint _ubo;
-  size_t _size;
+    char * _name;
+    GLuint _ubo;
+    size_t _size;
 
-  struct dusk_shader_data * _next;
+    struct dusk_shader_data * _next;
 
 } dusk_shader_data_t;
 
 typedef struct dusk_shader
 {
-  GLuint program;
+    GLuint program;
 } dusk_shader_t;
 
 bool dusk_shader_init(dusk_shader_t * this, const dusk_shader_file_t * shaders);

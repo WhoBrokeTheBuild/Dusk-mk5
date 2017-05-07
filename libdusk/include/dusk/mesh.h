@@ -11,34 +11,34 @@
 
 typedef struct dusk_mesh_data
 {
-  dusk_Alignas(16) vec4f_t ambient;
-  dusk_Alignas(16) vec4f_t diffuse;
-  dusk_Alignas(16) vec4f_t specular;
+    dusk_Alignas(16) vec4f_t ambient;
+    dusk_Alignas(16) vec4f_t diffuse;
+    dusk_Alignas(16) vec4f_t specular;
 
-  dusk_Alignas(4) float shininess;
-  dusk_Alignas(4) float dissolve;
+    dusk_Alignas(4) float shininess;
+    dusk_Alignas(4) float dissolve;
 
-  dusk_Alignas(4) bool has_ambient_map;
-  dusk_Alignas(4) bool has_diffuse_map;
-  dusk_Alignas(4) bool has_specular_map;
-  dusk_Alignas(4) bool has_bump_map;
+    dusk_Alignas(4) bool has_ambient_map;
+    dusk_Alignas(4) bool has_diffuse_map;
+    dusk_Alignas(4) bool has_specular_map;
+    dusk_Alignas(4) bool has_bump_map;
 
 } dusk_mesh_data_t;
 
 typedef struct dusk_mesh
 {
-  unsigned int count;
+    unsigned int count;
 
-  GLenum _draw_mode;
-  GLuint _vao;
+    GLenum _draw_mode;
+    GLuint _vao;
 
-  dusk_material_t * _material;
-  dusk_shader_t *   _shader;
+    dusk_material_t * _material;
+    dusk_shader_t *   _shader;
 
-  dusk_mesh_data_t _shader_data;
+    dusk_mesh_data_t _shader_data;
 
-  int  _shader_data_id;
-  bool _shader_data_invalid;
+    int  _shader_data_id;
+    bool _shader_data_invalid;
 
 } dusk_mesh_t;
 

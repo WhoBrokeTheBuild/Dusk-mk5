@@ -7,12 +7,12 @@
 
 typedef struct dusk_timer
 {
-  bool _started;
+    bool _started;
 #ifdef WIN32
-  clock_t _point;
+    clock_t _point;
 #else
-  struct timespec _res;
-  struct timespec _point;
+    struct timespec _res;
+    struct timespec _point;
 #endif
 } dusk_timer_t;
 

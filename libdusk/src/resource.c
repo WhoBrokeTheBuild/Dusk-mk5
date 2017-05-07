@@ -1,98 +1,204 @@
 #include "dusk/resource.h"
 
-#include <stdlib.h>
-#include <dusk/camera.h>
-#include <dusk/material.h>
-#include <dusk/mesh.h>
-#include <dusk/model.h>
-#include <dusk/shader.h>
+#include "debug.h"
 
 typedef struct dusk_resource
 {
-  dusk_resource_type_t   type;
-  struct dusk_resource * next;
+    dusk_resource_type_t type;
 
-  union {
-    void *            ptr_data;
-    dusk_mesh_t *     ptr_mesh;
-    dusk_model_t *    ptr_model;
-    dusk_material_t * ptr_material;
-    dusk_camera_t *   ptr_camera;
-    dusk_shader_t *   ptr_shader;
-  };
+    bool dynamic;
+    int  refcount;
+
+    union {
+        void *            ptr_data;
+        dusk_mesh_t *     ptr_mesh;
+        dusk_model_t *    ptr_model;
+        dusk_material_t * ptr_material;
+        dusk_camera_t *   ptr_camera;
+        dusk_shader_t *   ptr_shader;
+    };
 
 } dusk_resource_t;
 
-dusk_resource_t   root_resource;
-dusk_resource_t * last_resource = &root_resource;
+unsigned int      _resource_count    = 0;
+unsigned int      _resource_capacity = 0;
+dusk_resource_t * _resource_list     = NULL;
+
+dusk_resource_t * _dusk_find_next_free_resource();
 
 void dusk_resource_free_data(dusk_resource_t * this)
 {
-  switch (this->type)
-  {
-  case DUSK_RSC_DATA: free(this->ptr_data); break;
-  case DUSK_RSC_MESH:
-    dusk_mesh_term(this->ptr_mesh);
-    free(this->ptr_mesh);
-    break;
-  case DUSK_RSC_MODEL:
-    dusk_model_term(this->ptr_model);
-    free(this->ptr_model);
-    break;
-  case DUSK_RSC_MATERIAL:
-    dusk_material_term(this->ptr_material);
-    free(this->ptr_material);
-    break;
-  case DUSK_RSC_CAMERA: free(this->ptr_camera); break;
-  case DUSK_RSC_SHADER:
-    dusk_shader_term(this->ptr_shader);
-    free(this->ptr_shader);
-    break;
-  default:;
-  }
+    if (NULL == this->ptr_data)
+    {
+        return;
+    }
 
-  this->ptr_data = NULL;
+    switch (this->type)
+    {
+    case DUSK_RSC_DATA: free(this->ptr_data); break;
+    case DUSK_RSC_MESH: dusk_mesh_term(this->ptr_mesh); break;
+    case DUSK_RSC_MODEL: dusk_model_term(this->ptr_model); break;
+    case DUSK_RSC_MATERIAL: dusk_material_term(this->ptr_material); break;
+    case DUSK_RSC_CAMERA: dusk_camera_term(this->ptr_camera); break;
+    case DUSK_RSC_SHADER: dusk_shader_term(this->ptr_shader); break;
+    default:;
+    }
+
+    if (this->dynamic)
+    {
+        free(this->ptr_data);
+    }
+    this->ptr_data = NULL;
 }
 
-void dusk_track_resource(dusk_resource_type_t type, void * data)
+bool dusk_track_static_resource(dusk_resource_type_t type, void * data)
 {
-  dusk_resource_t * new_item = malloc(sizeof(dusk_resource_t));
-  new_item->type             = type;
-  new_item->next             = NULL;
-  new_item->ptr_data         = data;
+    dusk_resource_t * ptr = _dusk_find_next_free_resource();
 
-  last_resource->next = new_item;
-  last_resource       = new_item;
+    if (NULL == ptr)
+    {
+        DEBUG_ERROR("Failed to track resource");
+        return false;
+    }
+
+    ptr->type     = type;
+    ptr->dynamic  = false;
+    ptr->ptr_data = data;
+    ptr->refcount = 1;
+
+    return true;
+}
+
+bool dusk_track_dynamic_resource(dusk_resource_type_t type, void * data)
+{
+    dusk_resource_t * ptr = _dusk_find_next_free_resource();
+
+    if (NULL == ptr)
+    {
+        DEBUG_ERROR("Failed to track resource");
+        return false;
+    }
+
+    ptr->type     = type;
+    ptr->dynamic  = true;
+    ptr->ptr_data = data;
+    ptr->refcount = 1;
+
+    return true;
+}
+
+void dusk_bind_resource(void * data)
+{
+    dusk_resource_t * ptr;
+    for (unsigned int i = 0; i < _resource_capacity; ++i)
+    {
+        ptr = &_resource_list[i];
+
+        if (ptr->ptr_data == data)
+        {
+            ++ptr->refcount;
+            break;
+        }
+    }
 }
 
 void dusk_free_resource(void * data)
 {
-  dusk_resource_t * ptr  = root_resource.next;
-  dusk_resource_t * last = NULL;
-  while (NULL != ptr)
-  {
-    if (ptr->ptr_data == data)
+    if (NULL == data)
     {
-      last->next = ptr->next;
-
-      dusk_resource_free_data(ptr);
-      free(ptr);
-      break;
+        return;
     }
-    last = ptr;
-    ptr  = ptr->next;
-  }
+
+    dusk_resource_t * ptr;
+    for (unsigned int i = 0; i < _resource_capacity; ++i)
+    {
+        ptr = &_resource_list[i];
+
+        if (ptr->ptr_data == data)
+        {
+            --ptr->refcount;
+            if (ptr->refcount <= 0)
+            {
+                --_resource_count;
+
+                dusk_resource_free_data(ptr);
+                ptr->ptr_data = NULL;
+            }
+        }
+    }
+}
+
+unsigned int dusk_get_resource_count()
+{
+    return _resource_count;
 }
 
 void dusk_free_all_resources()
 {
-  dusk_resource_t * ptr = root_resource.next;
-  dusk_resource_t * tmp;
-  while (NULL != ptr)
-  {
-    tmp = ptr;
-    ptr = ptr->next;
-    dusk_resource_free_data(ptr);
-    free(ptr);
-  }
+    dusk_resource_t * ptr;
+    for (unsigned int i = 0; i < _resource_capacity; ++i)
+    {
+        ptr = &_resource_list[i];
+
+        if (NULL != ptr->ptr_data)
+        {
+            --_resource_count;
+
+            dusk_resource_free_data(ptr);
+            ptr->ptr_data = NULL;
+        }
+    }
+
+    if (_resource_count != 0)
+    {
+        // Problem?
+    }
+
+    _resource_capacity = 0;
+    _resource_count    = 0;
+
+    free(_resource_list);
+    _resource_list = NULL;
+}
+
+dusk_resource_t * _dusk_find_next_free_resource()
+{
+    dusk_resource_t * ptr;
+    unsigned int      previous_capacity = _resource_capacity;
+
+    ++_resource_count;
+    if (_resource_count > _resource_capacity)
+    {
+        if (NULL == _resource_list)
+        {
+            _resource_capacity = 10;
+        }
+        else
+        {
+            _resource_capacity *= 2;
+        }
+
+        ptr = (dusk_resource_t *)realloc(_resource_list,
+                                         sizeof(dusk_resource_t) * _resource_capacity);
+        if (NULL == ptr)
+        {
+            DEBUG_ERROR("Out of memory");
+            return NULL;
+        }
+        _resource_list = ptr;
+
+        memset(_resource_list + previous_capacity,
+               0,
+               sizeof(dusk_resource_t) * (_resource_capacity - previous_capacity));
+    }
+
+    ptr = NULL;
+    for (unsigned int i = 0; i < _resource_capacity; ++i)
+    {
+        if (NULL == _resource_list[i].ptr_data)
+        {
+            ptr = &_resource_list[i];
+        }
+    }
+    return ptr;
 }

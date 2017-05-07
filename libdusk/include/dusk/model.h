@@ -2,6 +2,7 @@
 #define DUSK_MODEL_H
 
 #include <dusk/config.h>
+#include <dusk/dusk.h>
 #include <dusk/material.h>
 #include <dusk/mesh.h>
 #include <dusk/shader.h>
@@ -9,30 +10,30 @@
 
 typedef struct dusk_model_data
 {
-  dusk_Alignas(64) mat4x4_t model;
-  dusk_Alignas(64) mat4x4_t view;
-  dusk_Alignas(64) mat4x4_t proj;
-  dusk_Alignas(64) mat4x4_t mvp;
+    dusk_Alignas(64) mat4x4_t model;
+    dusk_Alignas(64) mat4x4_t view;
+    dusk_Alignas(64) mat4x4_t proj;
+    dusk_Alignas(64) mat4x4_t mvp;
 
 } dusk_model_data_t;
 
 typedef struct dusk_model
 {
-  dusk_shader_t * _shader;
-  unsigned int    _mesh_count;
-  dusk_mesh_t **  _meshes;
+    dusk_shader_t * _shader;
+    unsigned int    _mesh_count;
+    dusk_mesh_t **  _meshes;
 
-  mat4x4_t _mat;
-  bool     _mat_invalid;
+    mat4x4_t _mat;
+    bool     _mat_invalid;
 
-  dusk_model_data_t _shader_data;
+    dusk_model_data_t _shader_data;
 
-  int  _shader_data_id;
-  bool _shader_data_invalid;
+    int  _shader_data_id;
+    bool _shader_data_invalid;
 
-  vec3f_t _pos;
-  vec3f_t _rot;
-  vec3f_t _scale;
+    vec3f_t _pos;
+    vec3f_t _rot;
+    vec3f_t _scale;
 
 } dusk_model_t;
 

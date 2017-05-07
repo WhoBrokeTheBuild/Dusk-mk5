@@ -6,16 +6,16 @@ layout(location = 2) in vec2 in_texcoord;
 
 layout(std140) uniform ModelData
 {
-  mat4 model;
-  mat4 view;
-  mat4 proj;
-  mat4 mvp;
+    mat4 model;
+    mat4 view;
+    mat4 proj;
+    mat4 mvp;
 }
 model_data;
 
 layout(std140) uniform FlatData
 {
-  vec4 color;
+    vec4 color;
 }
 flat_data;
 
@@ -25,9 +25,9 @@ out vec2 texcoord;
 
 void main()
 {
-  position = in_position;
-  normal   = in_normal;
-  texcoord = in_texcoord;
+    position = in_position;
+    normal   = in_normal;
+    texcoord = in_texcoord;
 
-  gl_Position = model_data.mvp * vec4(position, 1.0);
+    gl_Position = model_data.mvp * vec4(position, 1.0);
 }
