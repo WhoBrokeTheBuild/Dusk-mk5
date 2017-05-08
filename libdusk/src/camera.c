@@ -166,51 +166,14 @@ void dusk_camera_look_at(dusk_camera_t * this, const vec3f_t look_at)
     this->_invalid_view = true;
 }
 
-void dusk_camera_move(dusk_camera_t * this, dusk_camera_dir_t dir, float amount)
+void dusk_camera_move(dusk_camera_t * this, vec3f_t move)
 {
-    vec3f_t tmp, left;
+    dusk_camera_update(this);
 
-    switch (dir)
-    {
-    case CAM_DIR_UP:
-
-        vec3f_xmuls(&tmp, &this->_up, amount);
-        vec3f_add(&this->_pos_delta, &tmp);
-
-        break;
-    case CAM_DIR_DOWN:
-
-        vec3f_xmuls(&tmp, &this->_up, amount);
-        vec3f_sub(&this->_pos_delta, &tmp);
-
-        break;
-    case CAM_DIR_LEFT:
-
-        vec3f_xcross(&left, &this->_dir, &this->_up);
-        vec3f_muls(&left, amount);
-        vec3f_sub(&this->_pos_delta, &left);
-
-        break;
-    case CAM_DIR_RIGHT:
-
-        vec3f_xcross(&left, &this->_dir, &this->_up);
-        vec3f_muls(&left, amount);
-        vec3f_add(&this->_pos_delta, &left);
-
-        break;
-    case CAM_DIR_FORWARD:
-
-        vec3f_xmuls(&tmp, &this->_dir, amount);
-        vec3f_add(&this->_pos_delta, &tmp);
-
-        break;
-    case CAM_DIR_BACK:
-
-        vec3f_xmuls(&tmp, &this->_dir, amount);
-        vec3f_sub(&this->_pos_delta, &tmp);
-
-        break;
-    }
+    vec4f_t tmp = glmm_mat4x4_mulv(&this->view, &(vec4f_t){{move.x, move.y, move.z, 1.0f}});
+    vec3f_t new_move = {{tmp.x, tmp.y, tmp.z}};
+    vec3f_add(&this->_pos, &new_move);
+    vec3f_add(&this->_look_at, &new_move);
 
     this->_invalid_view = true;
 }

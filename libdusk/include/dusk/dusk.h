@@ -47,7 +47,7 @@ typedef struct dusk_settings
 
 typedef struct dusk_callbacks
 {
-    void (*update)(dusk_frame_info_t *);
+    void (*update)(dusk_frame_info_t *, SDL_Event *);
     void (*render)();
 
 } dusk_callbacks_t;

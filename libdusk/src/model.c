@@ -61,10 +61,7 @@ void dusk_model_render(dusk_model_t * this)
     {
         _dusk_model_update_mat(this);
     }
-    if (this->_shader_data_invalid)
-    {
-        _dusk_model_update_shader_data(this);
-    }
+    _dusk_model_update_shader_data(this);
 
     dusk_shader_bind(this->_shader);
     dusk_shader_set_data(this->_shader, this->_shader_data_id, &this->_shader_data);
@@ -121,7 +118,6 @@ void _dusk_model_update_mat(dusk_model_t * this)
     mat4x4_translate(&this->_mat, &this->_pos);
 
     this->_mat_invalid         = false;
-    this->_shader_data_invalid = true;
 }
 
 void _dusk_model_update_shader_data(dusk_model_t * this)
@@ -135,8 +131,6 @@ void _dusk_model_update_shader_data(dusk_model_t * this)
 
     mat4x4_xmul(&data->mvp, &data->proj, &data->view);
     mat4x4_mul(&data->mvp, &data->model);
-
-    this->_shader_data_invalid = false;
 }
 
 dusk_model_t * dusk_load_model_from_file(const char * filename, dusk_shader_t * shader)

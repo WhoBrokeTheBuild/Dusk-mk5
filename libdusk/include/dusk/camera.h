@@ -6,16 +6,6 @@
 
 #define DUSK_MAX_CAMERA_COUNT 100
 
-typedef enum dusk_camera_dir {
-    CAM_DIR_UP,
-    CAM_DIR_DOWN,
-    CAM_DIR_LEFT,
-    CAM_DIR_RIGHT,
-    CAM_DIR_FORWARD,
-    CAM_DIR_BACK
-
-} dusk_camera_dir_t;
-
 typedef struct dusk_camera
 {
     mat4x4_t view;
@@ -63,7 +53,7 @@ vec3f_t dusk_camera_get_up(dusk_camera_t * this);
 
 void dusk_camera_look_at(dusk_camera_t * this, const vec3f_t look_at);
 
-void dusk_camera_move(dusk_camera_t * this, dusk_camera_dir_t dir, float amount);
+void dusk_camera_move(dusk_camera_t * this, vec3f_t move);
 
 void dusk_camera_change_pitch(dusk_camera_t * this, float angle);
 void dusk_camera_change_yaw(dusk_camera_t * this, float angle);

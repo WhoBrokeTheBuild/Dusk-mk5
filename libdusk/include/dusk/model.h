@@ -29,7 +29,6 @@ typedef struct dusk_model
     dusk_model_data_t _shader_data;
 
     int  _shader_data_id;
-    bool _shader_data_invalid;
 
     vec3f_t _pos;
     vec3f_t _rot;

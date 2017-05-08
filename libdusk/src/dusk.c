@@ -99,7 +99,8 @@ void dusk_run()
     dusk_timer_t timer;
     dusk_timer_start(&timer);
 
-    SDL_Event ev;
+    SDL_Event event;
+    SDL_Event * ev;
 
     _running = true;
     while (_running)
@@ -107,11 +108,14 @@ void dusk_run()
         diff_ms = dusk_timer_get_ms(&timer);
         dusk_timer_start(&timer);
 
-        SDL_PollEvent(&ev);
-        switch (ev.type)
+        ev = NULL;
+        if (SDL_PollEvent(&event))
         {
-        case SDL_QUIT: dusk_stop(); break;
-        default:;
+            ev = &event;
+            if (SDL_QUIT == ev->type)
+            {
+                dusk_stop();
+            }
         }
 
         // Update
@@ -123,7 +127,7 @@ void dusk_run()
 
         if (NULL != _callbacks.update)
         {
-            _callbacks.update(&frame_info);
+            _callbacks.update(&frame_info, ev);
         }
 
         // Render
